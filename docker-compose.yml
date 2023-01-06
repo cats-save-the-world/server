@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    environment:
+      DEBUG: 'true'
+      DATABASE_URL: postgres://postgres:postgres@server-db/postgres
+    volumes:
+      - .:/app
+    ports:
+      - '8000:8000'
+    tty: true
+    depends_on:
+      server-db:
+        condition: service_healthy
+    command: python -m code.app
+
+  server-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 3s
+    ports:
+      - '5432:5432'
