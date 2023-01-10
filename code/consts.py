@@ -10,4 +10,3 @@ class ControlActionTypes:
 
 class ConnectionIntervals:
     SEND = 0.1
-    RECEIVE = 0.1
