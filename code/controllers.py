@@ -10,8 +10,8 @@ class Controller(ABC):
 
 
 class CatController(Controller):
-    ACCELERATION_SPEED: int = 2
-    BRAKING_SPEED: int = 1
+    ACCELERATION_SPEED: int = 1
+    BRAKING_SPEED: int = 0.5
     MAX_SPEED: int = 10
     _degree: int = 0
     _speed: int = 0
