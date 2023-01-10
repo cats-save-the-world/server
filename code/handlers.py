@@ -33,6 +33,5 @@ async def game_events_handler(websocket: WebSocket, game_id: UUID):
         while True:
             data = await websocket.receive_json()
             controller.dispatch(data)
-            await asyncio.sleep(ConnectionIntervals.RECEIVE)
     except WebSocketDisconnect:
         task.cancel()
