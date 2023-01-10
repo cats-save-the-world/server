@@ -6,8 +6,8 @@ from fastapi import WebSocket, WebSocketDisconnect
 from code.controllers import GameController
 from code.models import Game
 
-SEND_INTERVAL = 1
-RECEIVE_INTERVAL = 0.2
+SEND_INTERVAL = 0.1
+RECEIVE_INTERVAL = 0.1
 
 
 async def game_create_handler():
