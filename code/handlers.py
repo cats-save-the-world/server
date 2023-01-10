@@ -3,7 +3,7 @@ from uuid import UUID
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from code.consts import ConnectionIntervals
+from code.consts import SEND_INTERVAL
 from code.controllers import GameController
 from code.models import Game
 
@@ -16,7 +16,7 @@ async def game_create_handler():
 async def _send_state(websocket: WebSocket, controller: GameController):
     while True:
         await websocket.send_json(controller.state)
-        await asyncio.sleep(ConnectionIntervals.SEND)
+        await asyncio.sleep(SEND_INTERVAL)
 
 
 async def game_events_handler(websocket: WebSocket, game_id: UUID):

@@ -8,5 +8,4 @@ class ControlActionTypes:
     STOP = 'stop'
 
 
-class ConnectionIntervals:
-    SEND = 0.1
+SEND_INTERVAL = 0.1
