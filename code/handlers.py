@@ -3,11 +3,9 @@ from uuid import UUID
 
 from fastapi import WebSocket, WebSocketDisconnect
 
+from code.consts import ConnectionIntervals
 from code.controllers import GameController
 from code.models import Game
-
-SEND_INTERVAL = 0.1
-RECEIVE_INTERVAL = 0.1
 
 
 async def game_create_handler():
@@ -18,7 +16,7 @@ async def game_create_handler():
 async def _send_state(websocket: WebSocket, controller: GameController):
     while True:
         await websocket.send_json(controller.state)
-        await asyncio.sleep(SEND_INTERVAL)
+        await asyncio.sleep(ConnectionIntervals.SEND)
 
 
 async def game_events_handler(websocket: WebSocket, game_id: UUID):
@@ -35,6 +33,6 @@ async def game_events_handler(websocket: WebSocket, game_id: UUID):
         while True:
             data = await websocket.receive_json()
             controller.dispatch(data)
-            await asyncio.sleep(RECEIVE_INTERVAL)
+            await asyncio.sleep(ConnectionIntervals.RECEIVE)
     except WebSocketDisconnect:
         task.cancel()
