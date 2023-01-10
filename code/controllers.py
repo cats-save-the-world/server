@@ -1,6 +1,11 @@
+import asyncio
 from abc import ABC, abstractmethod
+from typing import List
 
-from code.consts import ControlActionTypes, GameEventTypes
+from uuid import uuid4 as generate_uuid
+
+from code.consts import ControlActionTypes, GameEventTypes, METEOR_GENERATION_INTERVAL, MAX_METEOR_NUMBER
+from code.utils import generate_degree, generate_radius
 
 
 class Controller(ABC):
@@ -44,16 +49,43 @@ class CatController(Controller):
                 self._speed = min(self._speed + self.BRAKING_SPEED, 0)
 
 
+class MeteorController(Controller):
+    SPEED: int = 10
+
+    def __init__(self):
+        self.id = str(generate_uuid())
+        self._radius = generate_radius()
+        self._degree = generate_degree()
+
+    @property
+    def state(self) -> dict:
+        return {
+            'id': self.id,
+            'radius': self._radius,
+            'degree': self._degree,
+        }
+
+    def control(self):
+        self._radius -= self.SPEED
+
+        if self._radius <= 150:
+            pass
+            #  TODO метеорит достиг Земли
+
+
 class GameController(Controller):
     _cat: CatController
+    _meteors: List[MeteorController] = []
 
     def __init__(self) -> None:
         self._cat = CatController()
+        self.generate_meteor_task = asyncio.create_task(self.generate_meteor())
 
     @property
     def state(self) -> dict:
         return {
             'cat': self._cat.state,
+            'meteors': [meteor.state for meteor in self._meteors],
         }
 
     def dispatch(self, action: dict):
@@ -61,3 +93,12 @@ class GameController(Controller):
 
         if action_type == GameEventTypes.CONTROL:
             self._cat.control(action['payload'])
+
+        for meteor in self._meteors:
+            meteor.control()
+
+    async def generate_meteor(self):
+        while True:
+            if len(self._meteors) < MAX_METEOR_NUMBER:
+                self._meteors.append(MeteorController())
+            await asyncio.sleep(METEOR_GENERATION_INTERVAL)
