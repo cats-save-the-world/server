@@ -7,7 +7,6 @@ from code.controllers import GameController
 from code.models import Game
 
 SEND_INTERVAL = 0.1
-RECEIVE_INTERVAL = 0.1
 
 
 async def game_create_handler():
@@ -35,6 +34,6 @@ async def game_events_handler(websocket: WebSocket, game_id: UUID):
         while True:
             data = await websocket.receive_json()
             controller.dispatch(data)
-            await asyncio.sleep(RECEIVE_INTERVAL)
     except WebSocketDisconnect:
+        controller.stop_cycle()
         task.cancel()
