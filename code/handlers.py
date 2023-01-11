@@ -35,6 +35,6 @@ async def game_events_handler(websocket: WebSocket, game_id: UUID):
             data = await websocket.receive_json()
             controller.dispatch(data)
     except WebSocketDisconnect:
-        controller.stop_generate_meteor()
+        controller.stop_generate_meteors()
         controller.stop_cycle()
         task.cancel()
