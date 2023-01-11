@@ -8,7 +8,6 @@ class ControlActionTypes:
     STOP = 'stop'
 
 
-SEND_INTERVAL = 0.1
 METEOR_GENERATION_INTERVAL = 3
 MAX_METEOR_NUMBER = 5
 

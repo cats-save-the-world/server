@@ -3,9 +3,10 @@ from uuid import UUID
 
 from fastapi import WebSocket, WebSocketDisconnect
 
-from code.consts import SEND_INTERVAL
 from code.controllers import GameController
 from code.models import Game
+
+SEND_INTERVAL = 0.1
 
 
 async def game_create_handler():
@@ -34,5 +35,6 @@ async def game_events_handler(websocket: WebSocket, game_id: UUID):
             data = await websocket.receive_json()
             controller.dispatch(data)
     except WebSocketDisconnect:
-        controller.generate_meteor_task.cancel()
+        controller.stop_generate_meteor()
+        controller.stop_cycle()
         task.cancel()
