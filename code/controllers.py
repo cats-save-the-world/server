@@ -68,7 +68,6 @@ class MeteorController(Controller):
 
 
 class ManyMeteorsController(Controller):
-    MAX_METEORS = 5
     METEOR_GENERATION_INTERVAL = 3
     _meteors: list[MeteorController] = []
 
@@ -77,8 +76,7 @@ class ManyMeteorsController(Controller):
 
     async def generate_meteors(self):
         while True:
-            if len(self._meteors) < self.MAX_METEORS:
-                self._meteors.append(MeteorController())
+            self._meteors.append(MeteorController())
             await asyncio.sleep(self.METEOR_GENERATION_INTERVAL)
 
     def stop_generate_meteors(self):
