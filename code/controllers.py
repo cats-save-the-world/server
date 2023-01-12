@@ -69,9 +69,9 @@ class EnemyController(Controller):
 
 class EnemiesController(Controller):
     ENEMY_GENERATION_INTERVAL = 3
-    _enemies: dict = dict()
 
     def __init__(self) -> None:
+        self._enemies = {}
         self._generate_enemies_task = asyncio.create_task(self.generate_enemies())
 
     async def generate_enemies(self):
