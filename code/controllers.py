@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 import asyncio
+from uuid import uuid4
 
 from code.consts import ControlActionTypes, GameEventTypes
+from code.utils import generate_degree, generate_radius
 
 CYCLE_INTERVAL = 0.1
 
@@ -41,27 +43,83 @@ class CatController(Controller):
                 self._speed = min(self._speed + self.BRAKING_SPEED, 0)
 
 
+class EnemyController(Controller):
+    SPEED: int = 10
+
+    def __init__(self):
+        self.id = uuid4()
+        self._radius = generate_radius()
+        self._degree = generate_degree()
+
+    @property
+    def state(self) -> dict:
+        return {
+            'id': str(self.id),
+            'radius': self._radius,
+            'degree': self._degree,
+        }
+
+    def control(self):
+        self._radius -= self.SPEED
+
+        if self._radius <= 150:
+            pass
+            #  TODO достиг Земли
+
+
+class EnemiesController(Controller):
+    ENEMY_GENERATION_INTERVAL: int = 3
+    _enemies: dict
+    _generate_enemies_task: asyncio.Task
+
+    def __init__(self) -> None:
+        self._enemies = {}
+        self._generate_enemies_task = asyncio.create_task(self.generate_enemies())
+
+    async def generate_enemies(self):
+        while True:
+            enemy = EnemyController()
+            self._enemies[enemy.state['id']] = enemy
+            await asyncio.sleep(self.ENEMY_GENERATION_INTERVAL)
+
+    def stop_generate_enemies(self):
+        self._generate_enemies_task.cancel()
+
+    def control(self):
+        for enemy in self._enemies.values():
+            enemy.control()
+
+    @property
+    def state(self) -> list:
+        return [enemy.state for enemy in self._enemies.values()]
+
+
 class GameController(Controller):
     _cat: CatController
     _last_control_action: str = ControlActionTypes.STOP
     _cycle_task: asyncio.Task
+    _enemies: EnemiesController
 
     def __init__(self) -> None:
         self._cat = CatController()
+        self._enemies = EnemiesController()
         self._cycle_task = asyncio.create_task(self._cycle())
 
     async def _cycle(self) -> None:
         while True:
             self._cat.control(self._last_control_action)
+            self._enemies.control()
             await asyncio.sleep(CYCLE_INTERVAL)
 
     def stop_cycle(self) -> None:
+        self._enemies.stop_generate_enemies()
         self._cycle_task.cancel()
 
     @property
     def state(self) -> dict:
         return {
             'cat': self._cat.state,
+            'enemies': self._enemies.state,
         }
 
     def dispatch(self, action: dict) -> None:
