@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import asyncio
-from uuid import uuid4 as generate_uuid
+from uuid import uuid4
 
 from code.consts import ControlActionTypes, GameEventTypes
 from code.utils import generate_degree, generate_radius
@@ -47,7 +47,7 @@ class MeteorController(Controller):
     SPEED: int = 10
 
     def __init__(self):
-        self.id = generate_uuid()
+        self.id = uuid4()
         self._radius = generate_radius()
         self._degree = generate_degree()
 
