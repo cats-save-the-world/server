@@ -111,6 +111,7 @@ class GameController(Controller):
             await asyncio.sleep(CYCLE_INTERVAL)
 
     def stop_cycle(self) -> None:
+        self._meteors.stop_generate_meteors()
         self._cycle_task.cancel()
 
     @property
