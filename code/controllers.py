@@ -67,23 +67,24 @@ class MeteorController(Controller):
             #  TODO метеорит достиг Земли
 
 
-class ManyMeteorsController(Controller):
+class MeteorsController(Controller):
     METEOR_GENERATION_INTERVAL = 3
-    _meteors: list[MeteorController] = []
+    _meteors: dict = dict()
 
     def __init__(self) -> None:
         self._generate_meteors_task = asyncio.create_task(self.generate_meteors())
 
     async def generate_meteors(self):
         while True:
-            self._meteors.append(MeteorController())
+            meteor = MeteorController()
+            self._meteors[meteor.state['id']] = meteor
             await asyncio.sleep(self.METEOR_GENERATION_INTERVAL)
 
     def stop_generate_meteors(self):
         self._generate_meteors_task.cancel()
 
     def control(self):
-        for meteor in self._meteors:
+        for meteor in self._meteors.values():
             meteor.control()
 
     @property
@@ -95,11 +96,11 @@ class GameController(Controller):
     _cat: CatController
     _last_control_action: str = ControlActionTypes.STOP
     _cycle_task: asyncio.Task
-    _meteors: ManyMeteorsController
+    _meteors: MeteorsController
 
     def __init__(self) -> None:
         self._cat = CatController()
-        self._meteors = ManyMeteorsController()
+        self._meteors = MeteorsController()
         self._cycle_task = asyncio.create_task(self._cycle())
 
     async def _cycle(self) -> None:
