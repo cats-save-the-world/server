@@ -68,7 +68,8 @@ class EnemyController(Controller):
 
 
 class EnemiesController(Controller):
-    ENEMY_GENERATION_INTERVAL = 3
+    ENEMY_GENERATION_INTERVAL: int = 3
+    _enemies: dict
 
     def __init__(self) -> None:
         self._enemies = {}
