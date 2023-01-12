@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import asyncio
 from uuid import uuid4 as generate_uuid
 
-from code.consts import ControlActionTypes, GameEventTypes, MAX_METEORS, METEOR_GENERATION_INTERVAL
+from code.consts import ControlActionTypes, GameEventTypes
 from code.utils import generate_degree, generate_radius
 
 CYCLE_INTERVAL = 0.1
@@ -68,6 +68,8 @@ class MeteorController(Controller):
 
 
 class ManyMeteorsController(Controller):
+    MAX_METEORS = 5
+    METEOR_GENERATION_INTERVAL = 3
     _meteors: list[MeteorController] = []
 
     def __init__(self) -> None:
@@ -75,9 +77,9 @@ class ManyMeteorsController(Controller):
 
     async def generate_meteors(self):
         while True:
-            if len(self._meteors) < MAX_METEORS:
+            if len(self._meteors) < self.MAX_METEORS:
                 self._meteors.append(MeteorController())
-            await asyncio.sleep(METEOR_GENERATION_INTERVAL)
+            await asyncio.sleep(self.METEOR_GENERATION_INTERVAL)
 
     def stop_generate_meteors(self):
         self._generate_meteors_task.cancel()
