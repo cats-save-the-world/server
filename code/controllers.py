@@ -43,7 +43,7 @@ class CatController(Controller):
                 self._speed = min(self._speed + self.BRAKING_SPEED, 0)
 
 
-class MeteorController(Controller):
+class EnemyController(Controller):
     SPEED: int = 10
 
     def __init__(self):
@@ -64,60 +64,60 @@ class MeteorController(Controller):
 
         if self._radius <= 150:
             pass
-            #  TODO метеорит достиг Земли
+            #  TODO достиг Земли
 
 
-class MeteorsController(Controller):
-    METEOR_GENERATION_INTERVAL = 3
-    _meteors: dict = dict()
+class EnemiesController(Controller):
+    ENEMY_GENERATION_INTERVAL = 3
+    _enemies: dict = dict()
 
     def __init__(self) -> None:
-        self._generate_meteors_task = asyncio.create_task(self.generate_meteors())
+        self._generate_enemies_task = asyncio.create_task(self.generate_enemies())
 
-    async def generate_meteors(self):
+    async def generate_enemies(self):
         while True:
-            meteor = MeteorController()
-            self._meteors[meteor.state['id']] = meteor
-            await asyncio.sleep(self.METEOR_GENERATION_INTERVAL)
+            enemy = EnemyController()
+            self._enemies[enemy.state['id']] = enemy
+            await asyncio.sleep(self.ENEMY_GENERATION_INTERVAL)
 
-    def stop_generate_meteors(self):
-        self._generate_meteors_task.cancel()
+    def stop_generate_enemies(self):
+        self._generate_enemies_task.cancel()
 
     def control(self):
-        for meteor in self._meteors.values():
-            meteor.control()
+        for enemy in self._enemies.values():
+            enemy.control()
 
     @property
     def state(self) -> list:
-        return [meteor.state for meteor in self._meteors.values()]
+        return [enemy.state for enemy in self._enemies.values()]
 
 
 class GameController(Controller):
     _cat: CatController
     _last_control_action: str = ControlActionTypes.STOP
     _cycle_task: asyncio.Task
-    _meteors: MeteorsController
+    _enemies: EnemiesController
 
     def __init__(self) -> None:
         self._cat = CatController()
-        self._meteors = MeteorsController()
+        self._enemies = EnemiesController()
         self._cycle_task = asyncio.create_task(self._cycle())
 
     async def _cycle(self) -> None:
         while True:
             self._cat.control(self._last_control_action)
-            self._meteors.control()
+            self._enemies.control()
             await asyncio.sleep(CYCLE_INTERVAL)
 
     def stop_cycle(self) -> None:
-        self._meteors.stop_generate_meteors()
+        self._enemies.stop_generate_enemies()
         self._cycle_task.cancel()
 
     @property
     def state(self) -> dict:
         return {
             'cat': self._cat.state,
-            'meteors': self._meteors.state,
+            'enemies': self._enemies.state,
         }
 
     def dispatch(self, action: dict) -> None:
