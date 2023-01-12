@@ -88,8 +88,8 @@ class MeteorsController(Controller):
             meteor.control()
 
     @property
-    def state(self) -> list:
-        return [meteor.state for meteor in self._meteors]
+    def state(self) -> dict:
+        return {meteor.state.pop('id'): meteor.state for meteor in self._meteors.values()}
 
 
 class GameController(Controller):
