@@ -1,6 +1,5 @@
 from random import randint
 
-
 MINIMUM_GENERATION_RADIUS = 450
 MAXIMUM_GENERATION_RADIUS = 600
 
