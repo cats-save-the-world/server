@@ -1,4 +1,5 @@
-from tortoise import fields, Model
+from tortoise import fields
+from tortoise.models import Model
 
 
 class Game(Model):

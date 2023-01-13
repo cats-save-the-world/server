@@ -1,25 +1,20 @@
-from abc import ABC, abstractmethod
-import asyncio
-from uuid import uuid4
+from asyncio import create_task, sleep, Task
+from time import time
+from uuid import UUID, uuid4
 
 from code.consts import ControlActionTypes, GameEventTypes
 from code.utils import generate_degree, generate_radius
 
-CYCLE_INTERVAL = 0.1
 
-
-class Controller(ABC):
-    @property
-    @abstractmethod
-    def state(self) -> dict: ...
-
-
-class CatController(Controller):
+class CatController:
     ACCELERATION_SPEED: int = 2
     BRAKING_SPEED: int = 1
     MAX_SPEED: int = 10
-    _degree: int = 0
-    _speed: int = 0
+
+    def __init__(self) -> None:
+        self._degree: int = 0
+        self._speed: int = 0
+        self.control_action: str = ControlActionTypes.STOP
 
     @property
     def state(self) -> dict:
@@ -27,29 +22,31 @@ class CatController(Controller):
             'degree': self._degree,
         }
 
-    def control(self, control_action_type: str) -> None:
-        self._degree += self._speed
-
-        if control_action_type == ControlActionTypes.RIGHT:
+    def _update_speed(self) -> None:
+        if self.control_action == ControlActionTypes.RIGHT:
             self._speed = min(self._speed + self.ACCELERATION_SPEED, self.MAX_SPEED)
 
-        elif control_action_type == ControlActionTypes.LEFT:
+        elif self.control_action == ControlActionTypes.LEFT:
             self._speed = max(self._speed - self.ACCELERATION_SPEED, -self.MAX_SPEED)
 
-        elif control_action_type == ControlActionTypes.STOP:
+        elif self.control_action == ControlActionTypes.STOP:
             if self._speed > 0:
                 self._speed = max(self._speed - self.BRAKING_SPEED, 0)
             else:
                 self._speed = min(self._speed + self.BRAKING_SPEED, 0)
 
+    def tick(self) -> None:
+        self._update_speed()
+        self._degree += self._speed
 
-class EnemyController(Controller):
+
+class EnemyController:
     SPEED: int = 10
 
-    def __init__(self):
-        self.id = uuid4()
-        self._radius = generate_radius()
-        self._degree = generate_degree()
+    def __init__(self) -> None:
+        self.id: UUID = uuid4()
+        self._radius: int = generate_radius()
+        self._degree: int = generate_degree()
 
     @property
     def state(self) -> dict:
@@ -59,7 +56,7 @@ class EnemyController(Controller):
             'degree': self._degree,
         }
 
-    def control(self):
+    def tick(self) -> None:
         self._radius -= self.SPEED
 
         if self._radius <= 150:
@@ -67,52 +64,45 @@ class EnemyController(Controller):
             #  TODO достиг Земли
 
 
-class EnemiesController(Controller):
-    ENEMY_GENERATION_INTERVAL: int = 3
-    _enemies: dict
-    _generate_enemies_task: asyncio.Task
+class EnemiesController:
+    SPAWN_INTERVAL: int = 3
 
     def __init__(self) -> None:
-        self._enemies = {}
-        self._generate_enemies_task = asyncio.create_task(self.generate_enemies())
+        self._enemies: dict = {}
+        self._last_spawn: float = time()
 
-    async def generate_enemies(self):
-        while True:
-            enemy = EnemyController()
-            self._enemies[enemy.state['id']] = enemy
-            await asyncio.sleep(self.ENEMY_GENERATION_INTERVAL)
+    def _spawn_enemy(self) -> None:
+        enemy: EnemyController = EnemyController()
+        self._enemies[enemy.id] = enemy
+        self._last_spawn = time()
 
-    def stop_generate_enemies(self):
-        self._generate_enemies_task.cancel()
-
-    def control(self):
+    def tick(self) -> None:
         for enemy in self._enemies.values():
-            enemy.control()
+            enemy.tick()
+
+        if self._last_spawn + self.SPAWN_INTERVAL < time():
+            self._spawn_enemy()
 
     @property
     def state(self) -> list:
         return [enemy.state for enemy in self._enemies.values()]
 
 
-class GameController(Controller):
-    _cat: CatController
-    _last_control_action: str = ControlActionTypes.STOP
-    _cycle_task: asyncio.Task
-    _enemies: EnemiesController
+class GameController:
+    CYCLE_INTERVAL = 0.1
 
     def __init__(self) -> None:
-        self._cat = CatController()
-        self._enemies = EnemiesController()
-        self._cycle_task = asyncio.create_task(self._cycle())
+        self._cat: CatController = CatController()
+        self._enemies: EnemiesController = EnemiesController()
+        self._cycle_task: Task = create_task(self._cycle())
 
     async def _cycle(self) -> None:
         while True:
-            self._cat.control(self._last_control_action)
-            self._enemies.control()
-            await asyncio.sleep(CYCLE_INTERVAL)
+            self._cat.tick()
+            self._enemies.tick()
+            await sleep(self.CYCLE_INTERVAL)
 
     def stop_cycle(self) -> None:
-        self._enemies.stop_generate_enemies()
         self._cycle_task.cancel()
 
     @property
@@ -126,4 +116,4 @@ class GameController(Controller):
         action_type: str = action['type']
 
         if action_type == GameEventTypes.CONTROL:
-            self._last_control_action = action['payload']
+            self._cat.control_action = action['payload']
