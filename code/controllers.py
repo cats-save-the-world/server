@@ -117,7 +117,7 @@ class PlanetController:
     @property
     def state(self) -> dict:
         return {
-            'damage': self._health / self.MAX_HEALTH,
+            'damage': 1 - self._health / self.MAX_HEALTH,
         }
 
 
