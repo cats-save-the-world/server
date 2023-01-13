@@ -1,18 +1,22 @@
 class GameEventTypes:
-    CONTROL = 'control'
+    CONTROL: str = 'control'
 
 
 class ControlActionTypes:
-    LEFT = 'left'
-    RIGHT = 'right'
-    STOP = 'stop'
+    LEFT: str = 'left'
+    RIGHT: str = 'right'
+    STOP: str = 'stop'
 
 
 class CatStatus:
-    IDLE = 'idle'
-    RUNNING = 'running'
+    IDLE: str = 'idle'
+    RUNNING: str = 'running'
+    HITTING: str = 'hitting'
 
 
 class CatDirection:
-    LEFT = 'left'
-    RIGHT = 'right'
+    LEFT: str = 'left'
+    RIGHT: str = 'right'
+
+
+PLANET_DISTANCE: int = 160
