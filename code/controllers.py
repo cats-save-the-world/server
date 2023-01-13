@@ -83,10 +83,9 @@ class EnemyController:
 
 class EnemiesController:
     SPAWN_INTERVAL: int = 3
-    MINIMAL_RADIUS: int = 155
+    MINIMAL_RADIUS: int = 160
 
     def __init__(self) -> None:
-        # self._enemies: dict[UUID, EnemyController] = {}
         self._enemies: list[EnemyController] = []
         self._last_spawn: float = time()
 
@@ -109,19 +108,33 @@ class EnemiesController:
         return [enemy.state for enemy in self._enemies]
 
 
+class PlanetController:
+    MAX_HEALTH: int = 100
+
+    def __init__(self) -> None:
+        self._health: int = self.MAX_HEALTH
+
+    @property
+    def state(self) -> dict:
+        return {
+            'damage': self._health / self.MAX_HEALTH,
+        }
+
+
 class GameController:
-    CYCLE_INTERVAL = 0.1
+    TICK_INTERVAL = 0.1
 
     def __init__(self) -> None:
         self._cat: CatController = CatController()
         self._enemies: EnemiesController = EnemiesController()
+        self._planet: PlanetController = PlanetController()
         self._cycle_task: Task = create_task(self._cycle())
 
     async def _cycle(self) -> None:
         while True:
             self._cat.tick()
             self._enemies.tick()
-            await sleep(self.CYCLE_INTERVAL)
+            await sleep(self.TICK_INTERVAL)
 
     def stop_cycle(self) -> None:
         self._cycle_task.cancel()
@@ -131,6 +144,7 @@ class GameController:
         return {
             'cat': self._cat.state,
             'enemies': self._enemies.state,
+            'planet': self._planet.state,
         }
 
     def dispatch(self, action: dict) -> None:
