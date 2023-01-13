@@ -8,7 +8,7 @@ from code.controllers import PlanetController
     (PlanetController.MAX_HEALTH / 2, 0.5),
     (0, 1),
 ])
-def test_damage(health: int, damage: int):
+def test_damage(health: int, damage: int) -> None:
     controller = PlanetController()
     controller._health = health
 

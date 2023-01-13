@@ -1,5 +1,6 @@
 from asyncio import create_task, sleep, Task
 from time import time
+from typing import Callable
 from uuid import UUID, uuid4
 
 from code.consts import CatDirection, CatStatus, ControlActionTypes, GameEventTypes
@@ -63,11 +64,13 @@ class CatController:
 
 class EnemyController:
     SPEED: int = 10
+    MINIMAL_RADIUS: int = 160
 
-    def __init__(self) -> None:
+    def __init__(self, remove: Callable) -> None:
         self.id: UUID = uuid4()
         self.radius: int = generate_radius()
         self._degree: int = generate_degree()
+        self._remove: Callable = remove
 
     @property
     def state(self) -> dict:
@@ -80,23 +83,26 @@ class EnemyController:
     def tick(self) -> None:
         self.radius -= self.SPEED
 
+        if self.radius < self.MINIMAL_RADIUS:
+            self._remove(self.id)
+
 
 class EnemiesController:
     SPAWN_INTERVAL: int = 3
-    MINIMAL_RADIUS: int = 160
 
     def __init__(self) -> None:
         self._enemies: list[EnemyController] = []
         self._last_spawn: float = time()
 
     def _spawn_enemy(self) -> None:
-        enemy: EnemyController = EnemyController()
+        enemy: EnemyController = EnemyController(self._remove_enemy)
         self._enemies.append(enemy)
         self._last_spawn = time()
 
-    def tick(self) -> None:
-        self._enemies = [enemy for enemy in self._enemies if enemy.radius > self.MINIMAL_RADIUS]
+    def _remove_enemy(self, enemy_id: UUID) -> None:
+        self._enemies = [enemy for enemy in self._enemies if enemy.id != enemy_id]
 
+    def tick(self) -> None:
         for enemy in self._enemies:
             enemy.tick()
 
