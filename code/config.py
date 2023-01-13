@@ -8,7 +8,6 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-
 TORTOISE_CONFIG = {
     'connections': {'default': settings.database_url},
     'apps': {
