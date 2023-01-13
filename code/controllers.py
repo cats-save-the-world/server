@@ -45,47 +45,47 @@ class EnemyController:
 
     def __init__(self) -> None:
         self.id: UUID = uuid4()
-        self._radius: int = generate_radius()
+        self.radius: int = generate_radius()
         self._degree: int = generate_degree()
 
     @property
     def state(self) -> dict:
         return {
             'id': str(self.id),
-            'radius': self._radius,
+            'radius': self.radius,
             'degree': self._degree,
         }
 
     def tick(self) -> None:
-        self._radius -= self.SPEED
-
-        if self._radius <= 150:
-            pass
-            #  TODO достиг Земли
+        self.radius -= self.SPEED
 
 
 class EnemiesController:
     SPAWN_INTERVAL: int = 3
+    MINIMAL_RADIUS: int = 155
 
     def __init__(self) -> None:
-        self._enemies: dict = {}
+        # self._enemies: dict[UUID, EnemyController] = {}
+        self._enemies: list[EnemyController] = []
         self._last_spawn: float = time()
 
     def _spawn_enemy(self) -> None:
         enemy: EnemyController = EnemyController()
-        self._enemies[enemy.id] = enemy
+        self._enemies.append(enemy)
         self._last_spawn = time()
 
     def tick(self) -> None:
-        for enemy in self._enemies.values():
+        self._enemies = [enemy for enemy in self._enemies if enemy.radius > self.MINIMAL_RADIUS]
+
+        for enemy in self._enemies:
             enemy.tick()
 
         if self._last_spawn + self.SPAWN_INTERVAL < time():
             self._spawn_enemy()
 
     @property
-    def state(self) -> list:
-        return [enemy.state for enemy in self._enemies.values()]
+    def state(self) -> list[dict]:
+        return [enemy.state for enemy in self._enemies]
 
 
 class GameController:
