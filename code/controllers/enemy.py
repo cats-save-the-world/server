@@ -9,7 +9,7 @@ class EnemyController(RotatableController):
     MAX_DISTANCE: int = 1000
     MIN_ANGLE: int = 0
     MAX_ANGLE: int = 359
-    DAMAGE: int = 5
+    DAMAGE: int = 10
 
     def __init__(self) -> None:
         super().__init__(
