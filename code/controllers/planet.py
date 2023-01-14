@@ -5,7 +5,7 @@ class PlanetController:
         self._health: int = self.MAX_HEALTH
 
     def get_damage(self, damage: int) -> None:
-        self._health -= damage
+        self._health = max(self._health - damage, 0)
 
     @property
     def state(self) -> dict:
