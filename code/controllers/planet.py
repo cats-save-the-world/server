@@ -1,17 +1,14 @@
-from ._base import BaseController
-
-
-class PlanetController(BaseController):
+class PlanetController:
     MAX_HEALTH: int = 100
 
     def __init__(self) -> None:
         self._health: int = self.MAX_HEALTH
 
-    def tick(self) -> None:
-        pass
+    def get_damage(self, damage: int) -> None:
+        self._health = max(self._health - damage, 0)
 
     @property
     def state(self) -> dict:
         return {
-            'damage': 1 - self._health / self.MAX_HEALTH,
+            'damage': round((1 - self._health / self.MAX_HEALTH), 2),
         }

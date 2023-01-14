@@ -1,30 +1,30 @@
-from typing import Callable
+from random import randint
 from uuid import UUID, uuid4
 
-from code.utils import generate_degree, generate_radius
-from ._base import BaseController
+from ._rotatable import RotatableController
 
 
-class EnemyController(BaseController):
+class EnemyController(RotatableController):
     SPEED: int = 10
-    MINIMAL_RADIUS: int = 160
+    MAX_DISTANCE: int = 1000
+    MIN_ANGLE: int = 0
+    MAX_ANGLE: int = 359
+    DAMAGE: int = 10
 
-    def __init__(self, remove: Callable) -> None:
+    def __init__(self) -> None:
+        super().__init__(
+            angle=randint(self.MIN_ANGLE, self.MAX_ANGLE),
+            distance=self.MAX_DISTANCE,
+        )
         self.id: UUID = uuid4()
-        self.radius: int = generate_radius()
-        self._degree: int = generate_degree()
-        self._remove: Callable = remove
 
     @property
     def state(self) -> dict:
         return {
             'id': str(self.id),
-            'radius': self.radius,
-            'degree': self._degree,
+            'distance': self.distance,
+            'angle': self._angle,
         }
 
     def tick(self) -> None:
-        self.radius -= self.SPEED
-
-        if self.radius < self.MINIMAL_RADIUS:
-            self._remove(self.id)
+        self.distance -= self.SPEED
