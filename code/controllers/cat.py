@@ -1,4 +1,4 @@
-from code.consts import CatDirection, CatStatus, ControlActionTypes, PLANET_DISTANCE
+from code.consts import CatDirection, CAT_RADIUS, CatStatus, ControlActionTypes, PLANET_DISTANCE
 from ._rotatable import RotatableController
 
 
@@ -8,7 +8,7 @@ class CatController(RotatableController):
     MAX_SPEED: int = 10
 
     def __init__(self) -> None:
-        super().__init__(angle=0, distance=PLANET_DISTANCE)
+        super().__init__(angle=0, distance=PLANET_DISTANCE, radius=CAT_RADIUS)
         self._speed: int = 0
         self._status: str = CatStatus.IDLE
         self._direction: str = CatDirection.RIGHT
