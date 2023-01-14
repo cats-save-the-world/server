@@ -31,7 +31,7 @@ class GameController:
 
     def handle_events(self) -> None:
         for enemy in self._enemies:
-            if self._cat.intersect(enemy):
+            if self._cat.intersects(enemy):
                 self._cat.status = CatStatus.HITTING
                 self._enemies.remove_enemy(enemy.id)
 
