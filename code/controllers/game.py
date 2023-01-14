@@ -32,7 +32,7 @@ class GameController:
     def check_events(self) -> None:
         for enemy in self._enemies.get_list():
             if self._cat.intersect(enemy):
-                self._cat.set_status(CatStatus.HITTING)
+                self._cat.status = CatStatus.HITTING
                 self._enemies.remove_enemy(enemy.id)
 
             elif enemy.distance < PLANET_DISTANCE:

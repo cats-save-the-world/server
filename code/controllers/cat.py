@@ -35,6 +35,14 @@ class CatController(RotatableController):
         elif value == ControlActionTypes.RIGHT:
             self._direction = CatDirection.RIGHT
 
+    @property
+    def status(self) -> str:
+        return self._status
+
+    @status.setter
+    def status(self, value: str) -> None:
+        self._status = value
+
     def _update_speed(self) -> None:
         if self._control_action == ControlActionTypes.RIGHT:
             self._speed = min(self._speed + self.ACCELERATION_SPEED, self.MAX_SPEED)
@@ -50,9 +58,6 @@ class CatController(RotatableController):
 
     def _update_status(self) -> None:
         self._status = CatStatus.IDLE if self._speed == 0 else CatStatus.RUNNING
-
-    def set_status(self, status: str) -> None:
-        self._status = status
 
     def _update_angle(self) -> None:
         self._angle += self._speed
