@@ -24,7 +24,7 @@ class CatDirection:
 
 
 PLANET_DISTANCE: int = 160
-CAT_RADIUS: int = 10
+CAT_RADIUS: int = 15
 
 
 class EnemyTypes:
