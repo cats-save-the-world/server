@@ -9,6 +9,7 @@ class EnemyController(RotatableController):
     MAX_DISTANCE: int = 1000
     MIN_ANGLE: int = 0
     MAX_ANGLE: int = 359
+    DAMAGE: int = 5
 
     def __init__(self) -> None:
         super().__init__(
@@ -16,6 +17,7 @@ class EnemyController(RotatableController):
             distance=self.MAX_DISTANCE,
         )
         self.id: UUID = uuid4()
+        self.damage = self.DAMAGE
 
     @property
     def state(self) -> dict:

@@ -16,7 +16,7 @@ class EnemiesController:
         self._enemies.append(enemy)
         self._last_spawn = time()
 
-    def _remove_enemy(self, enemy_id: UUID) -> None:
+    def remove_enemy(self, enemy_id: UUID) -> None:
         self._enemies = [enemy for enemy in self._enemies if enemy.id != enemy_id]
 
     def tick(self) -> None:
@@ -26,6 +26,9 @@ class EnemiesController:
         if self._last_spawn + self.SPAWN_INTERVAL < time():
             self._spawn_enemy()
 
+    def list(self) -> list[EnemyController]:
+        return self._enemies
+
     @property
-    def state(self) -> list[dict]:
+    def state(self) -> list:
         return [enemy.state for enemy in self._enemies]

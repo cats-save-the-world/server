@@ -19,3 +19,6 @@ class RotatableController:
 
     def intersect(self, other: 'RotatableController') -> bool:
         return self.RADIUS + other.RADIUS > get_distance_between_points(self.center, other.center)
+
+    def get_distance(self) -> int:
+        return self._distance

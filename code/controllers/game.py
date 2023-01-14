@@ -1,6 +1,6 @@
 from asyncio import create_task, sleep, Task
 
-from code.consts import GameEventTypes
+from code.consts import GameEventTypes, CatStatus, PLANET_DISTANCE
 from .cat import CatController
 from .enemies import EnemiesController
 from .planet import PlanetController
@@ -26,6 +26,18 @@ class GameController:
     def tick(self) -> None:
         self._cat.tick()
         self._enemies.tick()
+
+        self.check_events()
+
+    def check_events(self) -> None:
+        for enemy in self._enemies.list():
+            if self._cat.intersect(enemy):
+                self._enemies.remove_enemy(enemy.id)
+                self._cat.set_status(CatStatus.HITTING)
+
+            elif enemy.get_distance() < PLANET_DISTANCE:
+                self._planet.get_damage(enemy.damage)
+                self._enemies.remove_enemy(enemy.id)
 
     @property
     def state(self) -> dict:

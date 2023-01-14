@@ -51,6 +51,9 @@ class CatController(RotatableController):
     def _update_status(self) -> None:
         self._status = CatStatus.IDLE if self._speed == 0 else CatStatus.RUNNING
 
+    def set_status(self, status: str) -> None:
+        self._status = status
+
     def _update_angle(self) -> None:
         self._angle += self._speed
 
