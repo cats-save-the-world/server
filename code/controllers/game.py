@@ -27,9 +27,9 @@ class GameController:
         self._cat.tick()
         self._enemies.tick()
 
-        self.check_events()
+        self.handle_events()
 
-    def check_events(self) -> None:
+    def handle_events(self) -> None:
         for enemy in self._enemies:
             if self._cat.intersect(enemy):
                 self._cat.status = CatStatus.HITTING
