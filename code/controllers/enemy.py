@@ -23,9 +23,9 @@ class EnemyController(RotatableController):
     def state(self) -> dict:
         return {
             'id': str(self.id),
-            'distance': self._distance,
+            'distance': self.distance,
             'angle': self._angle,
         }
 
     def tick(self) -> None:
-        self._distance -= self.SPEED
+        self.distance -= self.SPEED

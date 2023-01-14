@@ -35,7 +35,7 @@ class GameController:
                 self._cat.set_status(CatStatus.HITTING)
                 self._enemies.remove_enemy(enemy.id)
 
-            elif enemy.get_distance() < PLANET_DISTANCE:
+            elif enemy.distance < PLANET_DISTANCE:
                 self._planet.get_damage(enemy.damage)
                 self._enemies.remove_enemy(enemy.id)
 
