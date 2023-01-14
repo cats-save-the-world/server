@@ -17,7 +17,6 @@ class EnemyController(RotatableController):
             distance=self.MAX_DISTANCE,
         )
         self.id: UUID = uuid4()
-        self.damage = self.DAMAGE
 
     @property
     def state(self) -> dict:
