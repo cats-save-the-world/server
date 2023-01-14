@@ -26,9 +26,9 @@ class EnemiesController:
         if self._last_spawn + self.SPAWN_INTERVAL < time():
             self._spawn_enemy()
 
-    def list(self) -> list[EnemyController]:
+    def get_list(self) -> list[EnemyController]:
         return self._enemies
 
     @property
-    def state(self) -> list:
+    def state(self) -> list[dict]:
         return [enemy.state for enemy in self._enemies]
