@@ -1,6 +1,6 @@
 from asyncio import create_task, sleep, Task
 
-from code.consts import GameEventTypes, CatStatus, PLANET_DISTANCE
+from code.consts import CatStatus, GameEventTypes, PLANET_DISTANCE
 from .cat import CatController
 from .enemies import EnemiesController
 from .planet import PlanetController
