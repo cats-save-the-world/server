@@ -1,4 +1,4 @@
-from code.consts import CatDirection, CAT_RADIUS, CatStatus, ControlActionTypes, PLANET_DISTANCE
+from code.consts import CAT_RADIUS, CatDirection, CatStatus, ControlActionTypes, PLANET_DISTANCE
 from ._rotatable import RotatableController
 
 
