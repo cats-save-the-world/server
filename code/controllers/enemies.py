@@ -11,6 +11,10 @@ class EnemiesController:
         self._enemies: list[EnemyController] = []
         self._last_spawn: float = time()
 
+    def __iter__(self):
+        for enemy in self._enemies:
+            yield enemy
+
     def _spawn_enemy(self) -> None:
         enemy: EnemyController = EnemyController()
         self._enemies.append(enemy)
@@ -25,9 +29,6 @@ class EnemiesController:
 
         if self._last_spawn + self.SPAWN_INTERVAL < time():
             self._spawn_enemy()
-
-    def get_list(self) -> list[EnemyController]:
-        return self._enemies
 
     @property
     def state(self) -> list[dict]:
