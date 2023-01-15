@@ -1,4 +1,4 @@
-import random
+from random import choice
 from time import time
 from uuid import UUID
 
@@ -25,7 +25,7 @@ class EnemiesController:
             yield enemy
 
     def _spawn_enemy(self) -> None:
-        enemy: EnemyController = self._get_enemy_by_start_time()
+        enemy: EnemyController = self._get_enemy()
         self._enemies.append(enemy)
         self._last_spawn = time()
 
@@ -39,7 +39,7 @@ class EnemiesController:
         if self._last_spawn + self.SPAWN_INTERVAL < time():
             self._spawn_enemy()
 
-    def _get_enemy_by_start_time(self) -> EnemyController:
+    def _get_enemy(self) -> EnemyController:
         available_enemy_types = [SimpleEnemyController]
 
         if self._start_time + LEVEL_INTERVAL < time():
@@ -51,7 +51,7 @@ class EnemiesController:
         if self._start_time + 3 * LEVEL_INTERVAL < time():
             available_enemy_types.append(TwistedEnemyController)
 
-        return random.choice(available_enemy_types)()
+        return choice(available_enemy_types)()
 
     @property
     def state(self) -> list[dict]:
