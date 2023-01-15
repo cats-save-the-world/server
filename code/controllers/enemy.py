@@ -61,7 +61,7 @@ class TwistedEnemyController(EnemyController):
     RADIUS: int = 10
     DAMAGE: int = 10
     ANGLE_SHIFT: float = 0.5
-    TYPE: str = 'twist'
+    TYPE: str = 'twisted'
 
     def __init__(self):
         super().__init__()
