@@ -1,56 +1,57 @@
-from code.consts import CatDirection, CatStatus, ControlActionTypes, PLANET_DISTANCE
+from code.consts import CAT_RADIUS, CatDirection, CatStatus, ControlActionType, PLANET_DISTANCE
 from ._rotatable import RotatableController
 
 
 class CatController(RotatableController):
-    ACCELERATION_SPEED: int = 2
-    BRAKING_SPEED: int = 1
-    MAX_SPEED: int = 10
+    ACCELERATION_SPEED = 2
+    BRAKING_SPEED = 1
+    MAX_SPEED = 10
+    radius = CAT_RADIUS
 
     def __init__(self) -> None:
         super().__init__(angle=0, distance=PLANET_DISTANCE)
-        self._speed: int = 0
-        self._status: str = CatStatus.IDLE
-        self._direction: str = CatDirection.RIGHT
-        self._control_action: str = ControlActionTypes.STOP
+        self._speed = 0
+        self._status = CatStatus.IDLE
+        self._direction = CatDirection.RIGHT
+        self._control_action = ControlActionType.STOP
 
     @property
     def state(self) -> dict:
         return {
-            'angle': self._angle,
+            **super().state,
             'status': self._status,
             'direction': self._direction,
         }
 
     @property
-    def control_action(self) -> str:
+    def control_action(self) -> ControlActionType:
         return self._control_action
 
     @control_action.setter
-    def control_action(self, value: str) -> None:
+    def control_action(self, value: ControlActionType) -> None:
         self._control_action = value
 
-        if value == ControlActionTypes.LEFT:
+        if value == ControlActionType.LEFT:
             self._direction = CatDirection.LEFT
-        elif value == ControlActionTypes.RIGHT:
+        elif value == ControlActionType.RIGHT:
             self._direction = CatDirection.RIGHT
 
     @property
-    def status(self) -> str:
+    def status(self) -> CatStatus:
         return self._status
 
     @status.setter
-    def status(self, value: str) -> None:
+    def status(self, value: CatStatus) -> None:
         self._status = value
 
     def _update_speed(self) -> None:
-        if self._control_action == ControlActionTypes.RIGHT:
+        if self._control_action == ControlActionType.RIGHT:
             self._speed = min(self._speed + self.ACCELERATION_SPEED, self.MAX_SPEED)
 
-        elif self._control_action == ControlActionTypes.LEFT:
+        elif self._control_action == ControlActionType.LEFT:
             self._speed = max(self._speed - self.ACCELERATION_SPEED, -self.MAX_SPEED)
 
-        elif self._control_action == ControlActionTypes.STOP:
+        elif self._control_action == ControlActionType.STOP:
             if self._speed > 0:
                 self._speed = max(self._speed - self.BRAKING_SPEED, 0)
             else:
