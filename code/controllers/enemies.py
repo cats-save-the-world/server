@@ -3,7 +3,7 @@ from time import time
 from uuid import UUID
 
 from code.consts import LEVEL_INTERVAL
-from .enemy import SimpleEnemy, EnemyController, LightEnemy, HeavyEnemy, TwistEnemy
+from .enemy import SimpleEnemyController, EnemyController, LightEnemyController, HeavyEnemyController, TwistEnemyController
 
 
 class EnemiesController:
@@ -34,16 +34,16 @@ class EnemiesController:
             self._spawn_enemy()
 
     def _get_enemy_by_start_time(self) -> EnemyController:
-        available_enemy_types = [SimpleEnemy]
+        available_enemy_types = [SimpleEnemyController]
 
         if self._start_time + LEVEL_INTERVAL < time():
-            available_enemy_types.append(HeavyEnemy)
+            available_enemy_types.append(HeavyEnemyController)
 
         if self._start_time + 2 * LEVEL_INTERVAL < time():
-            available_enemy_types.append(LightEnemy)
+            available_enemy_types.append(LightEnemyController)
 
         if self._start_time + 3 * LEVEL_INTERVAL < time():
-            available_enemy_types.append(TwistEnemy)
+            available_enemy_types.append(TwistEnemyController)
 
         return random.choice(available_enemy_types)()
 

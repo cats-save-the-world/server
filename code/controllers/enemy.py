@@ -9,38 +9,18 @@ class EnemyController(RotatableController):
     MIN_ANGLE: int = 0
     MAX_ANGLE: int = 359
     DAMAGE: int = 10
-
-    def __init__(self, radius: int, speed: int) -> None:
-        super().__init__(
-            angle=randint(self.MIN_ANGLE, self.MAX_ANGLE),
-            distance=self.MAX_DISTANCE,
-            radius=radius,
-        )
-        self.id: UUID = uuid4()
-        self._speed: int = speed
-
-    @property
-    def state(self) -> dict:
-        return {
-            'id': str(self.id),
-            'distance': self.distance,
-            'angle': self._angle,
-        }
-
-    def tick(self) -> None:
-        self.distance -= self._speed
-
-
-class BaseEnemy(EnemyController):
     TYPE: str
     RADIUS: int
     SPEED: int
 
     def __init__(self) -> None:
         super().__init__(
+            angle=randint(self.MIN_ANGLE, self.MAX_ANGLE),
+            distance=self.MAX_DISTANCE,
             radius=self.RADIUS,
-            speed=self.SPEED,
         )
+        self.id: UUID = uuid4()
+        self._speed: int = self.SPEED
 
     @property
     def state(self) -> dict:
@@ -51,29 +31,32 @@ class BaseEnemy(EnemyController):
             'type': self.TYPE,
         }
 
+    def tick(self) -> None:
+        self.distance -= self._speed
 
-class SimpleEnemy(BaseEnemy):
+
+class SimpleEnemyController(EnemyController):
     SPEED: int = 10
     RADIUS: int = 10
     DAMAGE: int = 10
     TYPE: str = 'simple'
 
 
-class HeavyEnemy(BaseEnemy):
+class HeavyEnemyController(EnemyController):
     SPEED: int = 5
     RADIUS: int = 20
     DAMAGE: int = 20
     TYPE: str = 'heavy'
 
 
-class LightEnemy(BaseEnemy):
-    SPEED: int = 5
-    RADIUS: int = 20
-    DAMAGE: int = 20
+class LightEnemyController(EnemyController):
+    SPEED: int = 20
+    RADIUS: int = 5
+    DAMAGE: int = 5
     TYPE: str = 'light'
 
 
-class TwistEnemy(BaseEnemy):
+class TwistEnemyController(EnemyController):
     SPEED: int = 10
     RADIUS: int = 10
     DAMAGE: int = 10
