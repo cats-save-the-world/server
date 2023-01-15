@@ -1,4 +1,4 @@
-from random import randint
+from random import choice, randint
 from uuid import UUID, uuid4
 
 from ._rotatable import RotatableController
@@ -62,6 +62,10 @@ class TwistEnemyController(EnemyController):
     DAMAGE: int = 10
     ANGLE_SHIFT: float = 0.5
     TYPE: str = 'twist'
+
+    def __init__(self):
+        super().__init__()
+        self.ANGLE_SHIFT = choice([self.ANGLE_SHIFT, -self.ANGLE_SHIFT])
 
     def tick(self) -> None:
         super().tick()
