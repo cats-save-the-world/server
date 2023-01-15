@@ -52,25 +52,25 @@ class BaseEnemy(EnemyController):
         }
 
 
-class DefaultEnemy(BaseEnemy):
+class SimpleEnemy(BaseEnemy):
     SPEED: int = 10
     RADIUS: int = 10
     DAMAGE: int = 10
-    TYPE: str = 'DEFAULT'
+    TYPE: str = 'simple'
 
 
 class HeavyEnemy(BaseEnemy):
     SPEED: int = 5
     RADIUS: int = 20
     DAMAGE: int = 20
-    TYPE: str = 'HEAVY'
+    TYPE: str = 'heavy'
 
 
-class FastEnemy(BaseEnemy):
+class LightEnemy(BaseEnemy):
     SPEED: int = 5
     RADIUS: int = 20
     DAMAGE: int = 20
-    TYPE: str = 'FAST'
+    TYPE: str = 'light'
 
 
 class TwistEnemy(BaseEnemy):
@@ -78,7 +78,7 @@ class TwistEnemy(BaseEnemy):
     RADIUS: int = 10
     DAMAGE: int = 10
     ANGLE_SHIFT: float = 0.5
-    TYPE: str = 'TWIST'
+    TYPE: str = 'twist'
 
     def tick(self) -> None:
         super().tick()
