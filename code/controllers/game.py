@@ -1,6 +1,6 @@
 from asyncio import create_task, sleep, Task
 
-from code.consts import CatStatus, GameEventTypes, PLANET_DISTANCE
+from code.consts import CatStatus, ControlActionType, GameEventType, PLANET_DISTANCE
 from .cat import CatController
 from .enemies import EnemiesController
 from .planet import PlanetController
@@ -48,7 +48,8 @@ class GameController:
         }
 
     def dispatch(self, action: dict) -> None:
-        action_type: str = action['type']
+        action_type: GameEventType = action['type']
 
-        if action_type == GameEventTypes.CONTROL:
-            self._cat.control_action = action['payload']
+        if action_type == GameEventType.CONTROL:
+            control_action: ControlActionType = action['payload']
+            self._cat.control_action = control_action
