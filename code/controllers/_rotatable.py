@@ -8,8 +8,8 @@ class RotatableController:
     radius: int
 
     def __init__(self, angle: float, distance: int) -> None:
-        self._angle: float = angle
-        self.distance: int = distance
+        self._angle = angle
+        self.distance = distance
 
     @property
     def center(self) -> Point:

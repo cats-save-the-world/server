@@ -3,17 +3,17 @@ from ._rotatable import RotatableController
 
 
 class CatController(RotatableController):
-    ACCELERATION_SPEED: int = 2
-    BRAKING_SPEED: int = 1
-    MAX_SPEED: int = 10
-    radius: int = CAT_RADIUS
+    ACCELERATION_SPEED = 2
+    BRAKING_SPEED = 1
+    MAX_SPEED = 10
+    radius = CAT_RADIUS
 
     def __init__(self) -> None:
         super().__init__(angle=0, distance=PLANET_DISTANCE)
-        self._speed: int = 0
-        self._status: CatStatus = CatStatus.IDLE
-        self._direction: CatDirection = CatDirection.RIGHT
-        self._control_action: ControlActionType = ControlActionType.STOP
+        self._speed = 0
+        self._status = CatStatus.IDLE
+        self._direction = CatDirection.RIGHT
+        self._control_action = ControlActionType.STOP
 
     @property
     def state(self) -> dict:
@@ -37,11 +37,11 @@ class CatController(RotatableController):
             self._direction = CatDirection.RIGHT
 
     @property
-    def status(self) -> str:
+    def status(self) -> CatStatus:
         return self._status
 
     @status.setter
-    def status(self, value: str) -> None:
+    def status(self, value: CatStatus) -> None:
         self._status = value
 
     def _update_speed(self) -> None:

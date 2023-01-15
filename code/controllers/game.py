@@ -1,6 +1,6 @@
-from asyncio import create_task, sleep, Task
+from asyncio import create_task, sleep
 
-from code.consts import CatStatus, ControlActionType, GameEventType, PLANET_DISTANCE
+from code.consts import CatStatus, GameEventType, PLANET_DISTANCE
 from .cat import CatController
 from .enemies import EnemiesController
 from .planet import PlanetController
@@ -10,10 +10,10 @@ class GameController:
     TICK_INTERVAL = 0.1
 
     def __init__(self) -> None:
-        self._cat: CatController = CatController()
-        self._enemies: EnemiesController = EnemiesController()
-        self._planet: PlanetController = PlanetController()
-        self._clock_task: Task = create_task(self._start_clock())
+        self._cat = CatController()
+        self._enemies = EnemiesController()
+        self._planet = PlanetController()
+        self._clock_task = create_task(self._start_clock())
 
     async def _start_clock(self) -> None:
         while True:
@@ -48,8 +48,7 @@ class GameController:
         }
 
     def dispatch(self, action: dict) -> None:
-        action_type: GameEventType = action['type']
+        action_type = action['type']
 
         if action_type == GameEventType.CONTROL:
-            control_action: ControlActionType = action['payload']
-            self._cat.control_action = control_action
+            self._cat.control_action = action['payload']
