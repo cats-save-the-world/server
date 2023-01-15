@@ -56,7 +56,7 @@ class LightEnemyController(EnemyController):
     TYPE: str = 'light'
 
 
-class TwistEnemyController(EnemyController):
+class TwistedEnemyController(EnemyController):
     SPEED: int = 10
     RADIUS: int = 10
     DAMAGE: int = 10

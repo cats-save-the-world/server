@@ -8,7 +8,7 @@ from .enemy import (
     HeavyEnemyController,
     LightEnemyController,
     SimpleEnemyController,
-    TwistEnemyController,
+    TwistedEnemyController,
 )
 
 
@@ -49,7 +49,7 @@ class EnemiesController:
             available_enemy_types.append(LightEnemyController)
 
         if self._start_time + 3 * LEVEL_INTERVAL < time():
-            available_enemy_types.append(TwistEnemyController)
+            available_enemy_types.append(TwistedEnemyController)
 
         return random.choice(available_enemy_types)()
 
