@@ -3,7 +3,13 @@ from time import time
 from uuid import UUID
 
 from code.consts import LEVEL_INTERVAL
-from .enemy import SimpleEnemyController, EnemyController, LightEnemyController, HeavyEnemyController, TwistEnemyController
+from .enemy import (
+    EnemyController,
+    HeavyEnemyController,
+    LightEnemyController,
+    SimpleEnemyController,
+    TwistEnemyController,
+)
 
 
 class EnemiesController:
