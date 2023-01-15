@@ -1,16 +1,17 @@
 import asyncio
 from uuid import UUID
 
-from fastapi import WebSocket, WebSocketDisconnect
+from fastapi import Depends, WebSocket, WebSocketDisconnect
 
+from code.auth.dependencies import get_user
 from code.controllers import GameController
-from code.models import Game
+from code.models import Game, User
 
 SEND_INTERVAL = 0.1
 
 
-async def game_create_handler():
-    game = await Game.create()
+async def game_create_handler(user: User = Depends(get_user)):
+    game = await Game.create(user=user)
     return {'game_id': game.id}
 
 
