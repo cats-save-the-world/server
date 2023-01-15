@@ -21,7 +21,7 @@ class RotatableController:
     def state(self) -> dict:
         return {
             'angle': self._angle,
-            'radius': self.radius,
+            'distance': self.distance,
         }
 
     def intersects(self, other: 'RotatableController') -> bool:

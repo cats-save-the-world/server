@@ -22,7 +22,6 @@ class EnemyController(RotatableController):
         return {
             **super().state,
             'id': str(self.id),
-            'distance': self.distance,
             'type': self.type,
         }
 
