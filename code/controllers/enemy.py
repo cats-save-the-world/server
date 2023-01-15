@@ -1,72 +1,66 @@
-from random import choice, randint
-from uuid import UUID, uuid4
+from random import choice, uniform
+from uuid import uuid4
 
 from ._rotatable import RotatableController
 
 
 class EnemyController(RotatableController):
-    MAX_DISTANCE: int = 1000
-    MIN_ANGLE: int = 0
-    MAX_ANGLE: int = 359
-    DAMAGE: int = 10
-    TYPE: str
-    RADIUS: int
-    SPEED: int
+    INITIAL_DISTANCE = 1000
+    MIN_ANGLE = 0
+    MAX_ANGLE = 359
+    damage: int
+    speed: int
+    type: str  # noqa: A003
 
     def __init__(self) -> None:
-        super().__init__(
-            angle=randint(self.MIN_ANGLE, self.MAX_ANGLE),
-            distance=self.MAX_DISTANCE,
-            radius=self.RADIUS,
-        )
-        self.id: UUID = uuid4()
-        self._speed: int = self.SPEED
+        angle = round(uniform(self.MIN_ANGLE, self.MAX_ANGLE), 2)
+        super().__init__(angle=angle, distance=self.INITIAL_DISTANCE)
+        self.id = uuid4()
 
     @property
     def state(self) -> dict:
         return {
             **super().state,
             'id': str(self.id),
-            'distance': self.distance,
-            'type': self.TYPE,
+            'type': self.type,
         }
 
     def tick(self) -> None:
-        self.distance -= self._speed
+        self.distance -= self.speed
 
 
 class SimpleEnemyController(EnemyController):
-    SPEED: int = 10
-    RADIUS: int = 10
-    DAMAGE: int = 10
-    TYPE: str = 'simple'
+    speed = 10
+    radius = 10
+    damage = 10
+    type = 'simple'  # noqa: A003
 
 
 class HeavyEnemyController(EnemyController):
-    SPEED: int = 5
-    RADIUS: int = 20
-    DAMAGE: int = 20
-    TYPE: str = 'heavy'
+    speed = 5
+    radius = 20
+    damage = 20
+    type = 'heavy'  # noqa: A003
 
 
 class LightEnemyController(EnemyController):
-    SPEED: int = 20
-    RADIUS: int = 5
-    DAMAGE: int = 5
-    TYPE: str = 'light'
+    speed = 20
+    radius = 10
+    damage = 5
+    type = 'light'  # noqa: A003
 
 
 class TwistedEnemyController(EnemyController):
-    SPEED: int = 10
-    RADIUS: int = 10
-    DAMAGE: int = 10
-    ANGLE_SHIFT: float = 0.5
-    TYPE: str = 'twist'
+    ANGLE_SHIFT = 0.5
+    speed = 10
+    radius = 10
+    damage = 10
+    type = 'twisted'  # noqa: A003
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
-        self.ANGLE_SHIFT = choice([self.ANGLE_SHIFT, -self.ANGLE_SHIFT])
+        self._angle_shift = choice([self.ANGLE_SHIFT, -self.ANGLE_SHIFT])
 
     def tick(self) -> None:
         super().tick()
-        self._angle += self.ANGLE_SHIFT
+        self._angle += self._angle_shift

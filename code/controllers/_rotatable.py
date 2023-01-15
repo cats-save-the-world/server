@@ -5,10 +5,11 @@ from code.utils import get_distance_between_points
 
 
 class RotatableController:
-    def __init__(self, angle: int, distance: int, radius: int) -> None:
-        self._angle: int = angle
-        self.distance: int = distance
-        self.radius: int = radius
+    radius: int
+
+    def __init__(self, angle: float, distance: int) -> None:
+        self._angle = angle
+        self.distance = distance
 
     @property
     def center(self) -> Point:
@@ -20,7 +21,7 @@ class RotatableController:
     def state(self) -> dict:
         return {
             'angle': self._angle,
-            'radius': self.radius,
+            'distance': self.distance,
         }
 
     def intersects(self, other: 'RotatableController') -> bool:
