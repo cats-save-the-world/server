@@ -19,7 +19,7 @@ class EnemiesController:
             yield enemy
 
     def _spawn_enemy(self) -> None:
-        enemy: EnemyController = self.get_enemy_by_start_time()
+        enemy: EnemyController = self._get_enemy_by_start_time()
         self._enemies.append(enemy)
         self._last_spawn = time()
 
@@ -33,7 +33,7 @@ class EnemiesController:
         if self._last_spawn + self.SPAWN_INTERVAL < time():
             self._spawn_enemy()
 
-    def get_enemy_by_start_time(self) -> EnemyController:
+    def _get_enemy_by_start_time(self) -> EnemyController:
         available_enemy_types = [DefaultEnemy]
 
         if self._start_time + LEVEL_INTERVAL < time():
