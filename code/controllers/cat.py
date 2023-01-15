@@ -6,9 +6,10 @@ class CatController(RotatableController):
     ACCELERATION_SPEED: int = 2
     BRAKING_SPEED: int = 1
     MAX_SPEED: int = 10
+    radius: int = CAT_RADIUS
 
     def __init__(self) -> None:
-        super().__init__(angle=0, distance=PLANET_DISTANCE, radius=CAT_RADIUS)
+        super().__init__(angle=0, distance=PLANET_DISTANCE)
         self._speed: int = 0
         self._status: CatStatus = CatStatus.IDLE
         self._direction: CatDirection = CatDirection.RIGHT

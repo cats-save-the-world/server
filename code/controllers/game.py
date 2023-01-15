@@ -36,7 +36,7 @@ class GameController:
                 self._enemies.remove_enemy(enemy.id)
 
             elif enemy.distance < PLANET_DISTANCE:
-                self._planet.get_damage(enemy.DAMAGE)
+                self._planet.get_damage(enemy.damage)
                 self._enemies.remove_enemy(enemy.id)
 
     @property

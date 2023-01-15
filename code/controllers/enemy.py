@@ -1,4 +1,4 @@
-from random import choice, randint
+from random import choice, uniform
 from uuid import UUID, uuid4
 
 from ._rotatable import RotatableController
@@ -10,13 +10,11 @@ class EnemyController(RotatableController):
     MAX_ANGLE: int = 359
     damage: int
     speed: int
-    type: str
+    type: str  # noqa: A003
 
     def __init__(self) -> None:
-        super().__init__(
-            angle=randint(self.MIN_ANGLE, self.MAX_ANGLE),
-            distance=self.INITIAL_DISTANCE,
-        )
+        angle = round(uniform(self.MIN_ANGLE, self.MAX_ANGLE), 2)
+        super().__init__(angle=angle, distance=self.INITIAL_DISTANCE)
         self.id: UUID = uuid4()
 
     @property
@@ -36,21 +34,21 @@ class SimpleEnemyController(EnemyController):
     speed: int = 10
     radius: int = 10
     damage: int = 10
-    type: str = 'simple'
+    type: str = 'simple'  # noqa: A003
 
 
 class HeavyEnemyController(EnemyController):
     speed: int = 5
     radius: int = 20
     damage: int = 20
-    type: str = 'heavy'
+    type: str = 'heavy'  # noqa: A003
 
 
 class LightEnemyController(EnemyController):
     speed: int = 20
     radius: int = 10
     damage: int = 5
-    type: str = 'light'
+    type: str = 'light'  # noqa: A003
 
 
 class TwistedEnemyController(EnemyController):
@@ -58,9 +56,9 @@ class TwistedEnemyController(EnemyController):
     speed: int = 10
     radius: int = 10
     damage: int = 10
-    type: str = 'twisted'
+    type: str = 'twisted'  # noqa: A003
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._angle_shift: float = choice([self.ANGLE_SHIFT, -self.ANGLE_SHIFT])
 
