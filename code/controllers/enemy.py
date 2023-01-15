@@ -31,8 +31,16 @@ class EnemyController(RotatableController):
         self.distance -= self._speed
 
 
-class TypedEnemyController(EnemyController):
+class BaseEnemy(EnemyController):
     TYPE: str
+    RADIUS: int
+    SPEED: int
+
+    def __init__(self) -> None:
+        super().__init__(
+            radius=self.RADIUS,
+            speed=self.SPEED,
+        )
 
     @property
     def state(self) -> dict:
@@ -44,57 +52,33 @@ class TypedEnemyController(EnemyController):
         }
 
 
-class DefaultEnemy(TypedEnemyController):
+class DefaultEnemy(BaseEnemy):
     SPEED: int = 10
     RADIUS: int = 10
     DAMAGE: int = 10
     TYPE: str = 'DEFAULT'
 
-    def __init__(self) -> None:
-        super().__init__(
-            radius=self.RADIUS,
-            speed=self.SPEED,
-        )
 
-
-class HeavyEnemy(TypedEnemyController):
+class HeavyEnemy(BaseEnemy):
     SPEED: int = 5
     RADIUS: int = 20
     DAMAGE: int = 20
     TYPE: str = 'HEAVY'
 
-    def __init__(self) -> None:
-        super().__init__(
-            radius=self.RADIUS,
-            speed=self.SPEED,
-        )
 
-
-class FastEnemy(TypedEnemyController):
+class FastEnemy(BaseEnemy):
     SPEED: int = 5
     RADIUS: int = 20
     DAMAGE: int = 20
     TYPE: str = 'FAST'
 
-    def __init__(self) -> None:
-        super().__init__(
-            radius=self.RADIUS,
-            speed=self.SPEED,
-        )
 
-
-class TwistEnemy(TypedEnemyController):
+class TwistEnemy(BaseEnemy):
     SPEED: int = 10
     RADIUS: int = 10
     DAMAGE: int = 10
     ANGLE_SHIFT: float = 0.5
     TYPE: str = 'TWIST'
-
-    def __init__(self) -> None:
-        super().__init__(
-            radius=self.RADIUS,
-            speed=self.SPEED,
-        )
 
     def tick(self) -> None:
         super().tick()
