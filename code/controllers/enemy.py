@@ -25,9 +25,9 @@ class EnemyController(RotatableController):
     @property
     def state(self) -> dict:
         return {
+            **super().state,
             'id': str(self.id),
             'distance': self.distance,
-            'angle': self._angle,
             'type': self.TYPE,
         }
 

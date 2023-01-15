@@ -17,7 +17,7 @@ class CatController(RotatableController):
     @property
     def state(self) -> dict:
         return {
-            'angle': self._angle,
+            **super().state,
             'status': self._status,
             'direction': self._direction,
         }
