@@ -5,10 +5,11 @@ from code.utils import get_distance_between_points
 
 
 class RotatableController:
-    def __init__(self, angle: int, distance: int, radius: int) -> None:
+    radius: int
+
+    def __init__(self, angle: int, distance: int) -> None:
         self._angle: int = angle
         self.distance: int = distance
-        self.radius: int = radius
 
     @property
     def center(self) -> Point:
