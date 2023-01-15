@@ -27,3 +27,5 @@ class CatDirection(StrEnum):
 
 
 PLANET_DISTANCE: int = 160
+CAT_RADIUS: int = 15
+LEVEL_INTERVAL: int = 20
