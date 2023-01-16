@@ -1,39 +1,69 @@
-import asyncio
+from asyncio import create_task, sleep
 from uuid import UUID
 
-from fastapi import WebSocket, WebSocketDisconnect
+from fastapi import Depends, WebSocket, WebSocketDisconnect
 
+from code.auth.dependencies import get_user
+from code.auth.exceptions import InvalidCredentials
+from code.auth.utils import get_user_by_credentials
+from code.consts import EventType
 from code.controllers import GameController
-from code.models import Game
-
-SEND_INTERVAL = 0.1
+from code.models import Game, User
 
 
-async def game_create_handler():
-    game = await Game.create()
+async def game_create_handler(user: User = Depends(get_user)):  # type: ignore[no-untyped-def]
+    game = await Game.create(user=user)
     return {'game_id': game.id}
 
 
-async def _send_state(websocket: WebSocket, controller: GameController):
-    while True:
-        await websocket.send_json(controller.state)
-        await asyncio.sleep(SEND_INTERVAL)
+class GameEventsHandler:
+    SEND_INTERVAL = 0.1
 
+    async def _authorize(self) -> User:
+        data = await self._websocket.receive_json()
 
-async def game_events_handler(websocket: WebSocket, game_id: UUID):
-    await websocket.accept()
+        if data.get('type') != EventType.AUTH:
+            raise InvalidCredentials
 
-    if await Game.get_or_none(id=game_id, is_active=True) is None:
-        await websocket.close()
-        return
+        payload = data['payload']
+        return await get_user_by_credentials(payload['username'], payload['password'])
 
-    controller = GameController()
-    task = asyncio.create_task(_send_state(websocket, controller))
+    async def _active_game_exists(self, game_id: UUID, user: User) -> bool:
+        return await Game.filter(id=game_id, user=user, is_active=True).exists()
 
-    try:
+    async def _send_state(self) -> None:
         while True:
-            data = await websocket.receive_json()
-            controller.dispatch(data)
-    except WebSocketDisconnect:
-        controller.stop_clock()
-        task.cancel()
+            await self._websocket.send_json({
+                'type': EventType.STATE,
+                'payload': self._game_controller.state,
+            })
+            await sleep(self.SEND_INTERVAL)
+
+    async def _receive(self) -> None:
+        data = await self._websocket.receive_json()
+
+        if data.get('type') == EventType.CONTROL:
+            self._game_controller.control(data['payload'])
+
+    async def __call__(self, websocket: WebSocket, game_id: UUID):  # type: ignore[no-untyped-def]
+        self._websocket = websocket
+        self._game_controller = GameController()
+
+        await self._websocket.accept()
+
+        try:
+            user = await self._authorize()
+        except InvalidCredentials:
+            return await self._websocket.close()
+
+        if not await self._active_game_exists(game_id, user):
+            return await self._websocket.close()
+
+        task = create_task(self._send_state())
+
+        try:
+            while True:
+                await self._receive()
+        except WebSocketDisconnect:
+            self._game_controller.stop_clock()
+            task.cancel()
