@@ -33,10 +33,17 @@ class GameEventsHandler:
 
     async def _send_state(self) -> None:
         while True:
-            await self._websocket.send_json({
-                'type': EventType.STATE,
-                'payload': self._game_controller.state,
-            })
+            game_state = self._game_controller.state
+
+            if not game_state:
+                await self._websocket.send_json(
+                    {'type': EventType.GAME_END}
+                )
+            else:
+                await self._websocket.send_json({
+                    'type': EventType.STATE,
+                    'payload': self._game_controller.state,
+                })
             await sleep(self.SEND_INTERVAL)
 
     async def _receive(self) -> None:

@@ -6,6 +6,7 @@ class EventType(StrEnum):
     AUTH = 'auth'
     STATE = 'state'
     CONTROL = 'control'
+    GAME_END = 'game_end'
 
 
 @unique

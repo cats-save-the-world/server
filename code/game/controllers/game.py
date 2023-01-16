@@ -41,6 +41,9 @@ class GameController:
 
     @property
     def state(self) -> dict:
+        if self._planet.state['damage'] >= 1:
+            return {}
+
         return {
             'cat': self._cat.state,
             'enemies': self._enemies.state,
