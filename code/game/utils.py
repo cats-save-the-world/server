@@ -1,6 +1,6 @@
 from math import sqrt
 
-from code.structures import Point
+from code.game.structures import Point
 
 
 def get_distance_between_points(a: Point, b: Point) -> float:

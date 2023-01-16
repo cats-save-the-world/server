@@ -6,8 +6,8 @@ from fastapi import Depends, WebSocket, WebSocketDisconnect
 from code.auth.dependencies import get_user
 from code.auth.exceptions import InvalidCredentials
 from code.auth.utils import get_user_by_credentials
-from code.consts import EventType
-from code.controllers import GameController
+from code.game.consts import EventType
+from code.game.controllers import GameController
 from code.models import Game, User
 
 

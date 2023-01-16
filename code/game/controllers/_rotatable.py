@@ -1,7 +1,7 @@
 from math import cos, radians, sin
 
-from code.structures import Point
-from code.utils import get_distance_between_points
+from code.game.structures import Point
+from code.game.utils import get_distance_between_points
 
 
 class RotatableController:
