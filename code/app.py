@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 import uvicorn
 
-from code import auth, handlers
+from code import auth, game
 from code.config import settings, TORTOISE_CONFIG
 
 app = FastAPI()
@@ -15,8 +15,7 @@ app.add_middleware(
     allow_headers=['*'],
 )
 app.include_router(auth.router, prefix='/auth')
-app.add_api_route('/games', handlers.game_create_handler, methods=['post'])
-app.add_api_websocket_route('/games/{game_id}/events', handlers.GameEventsHandler())
+app.include_router(game.router, prefix='/games')
 register_tortoise(app, config=TORTOISE_CONFIG)
 
 if __name__ == '__main__':
