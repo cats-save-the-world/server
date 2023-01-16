@@ -9,7 +9,7 @@ websockets = "*"
 uvicorn = "*"
 tortoise-orm = {extras = ["asyncpg"], version = "*"}
 aerich = "*"
-passlib = "*"
+passlib = {extras = ["bcrypt"], version = "*"}
 
 [dev-packages]
 flake8 = "*"
