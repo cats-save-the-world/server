@@ -19,23 +19,23 @@ async def game_create_handler(user: User = Depends(get_user)):  # type: ignore[n
 class GameEventsHandler:
     SEND_INTERVAL = 0.1
 
-    async def _authorize(self) -> None:
+    async def _authorize(self) -> User:
         data = await self._websocket.receive_json()
 
         if data.get('type') != EventType.AUTH:
             raise InvalidCredentials
 
         payload = data['payload']
-        await get_user_by_credentials(payload['username'], payload['password'])
+        return await get_user_by_credentials(payload['username'], payload['password'])
 
-    async def _active_game_exists(self) -> bool:
-        return await Game.filter(id=self._game_id, is_active=True).exists()
+    async def _active_game_exists(self, game_id: UUID, user: User) -> bool:
+        return await Game.filter(id=game_id, user=user, is_active=True).exists()
 
     async def _send_state(self) -> None:
         while True:
             await self._websocket.send_json({
                 'type': EventType.STATE,
-                'payload': self._game_controller.state
+                'payload': self._game_controller.state,
             })
             await sleep(self.SEND_INTERVAL)
 
@@ -47,17 +47,16 @@ class GameEventsHandler:
 
     async def __call__(self, websocket: WebSocket, game_id: UUID):  # type: ignore[no-untyped-def]
         self._websocket = websocket
-        self._game_id = game_id
         self._game_controller = GameController()
 
         await self._websocket.accept()
 
         try:
-            await self._authorize()
+            user = await self._authorize()
         except InvalidCredentials:
             return await self._websocket.close()
 
-        if not await self._active_game_exists():
+        if not await self._active_game_exists(game_id, user):
             return await self._websocket.close()
 
         task = create_task(self._send_state())
