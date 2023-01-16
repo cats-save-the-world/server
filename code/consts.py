@@ -2,30 +2,32 @@ from enum import StrEnum, unique
 
 
 @unique
-class GameEventType(StrEnum):
-    CONTROL: str = 'control'
+class EventType(StrEnum):
+    AUTH = 'auth'
+    STATE = 'state'
+    CONTROL = 'control'
 
 
 @unique
-class ControlActionType(StrEnum):
-    LEFT: str = 'left'
-    RIGHT: str = 'right'
-    STOP: str = 'stop'
+class ControlAction(StrEnum):
+    LEFT = 'left'
+    RIGHT = 'right'
+    STOP = 'stop'
 
 
 @unique
 class CatStatus(StrEnum):
-    IDLE: str = 'idle'
-    RUNNING: str = 'running'
-    HITTING: str = 'hitting'
+    IDLE = 'idle'
+    RUNNING = 'running'
+    HITTING = 'hitting'
 
 
 @unique
 class CatDirection(StrEnum):
-    LEFT: str = 'left'
-    RIGHT: str = 'right'
+    LEFT = 'left'
+    RIGHT = 'right'
 
 
-PLANET_DISTANCE: int = 160
-CAT_RADIUS: int = 15
-LEVEL_INTERVAL: int = 20
+PLANET_DISTANCE = 160
+CAT_RADIUS = 15
+LEVEL_INTERVAL = 20

@@ -16,7 +16,7 @@ app.add_middleware(
 )
 app.include_router(auth.router, prefix='/auth')
 app.add_api_route('/games', handlers.game_create_handler, methods=['post'])
-app.add_api_websocket_route('/games/{game_id}/events', handlers.game_events_handler)
+app.add_api_websocket_route('/games/{game_id}/events', handlers.GameEventsHandler())
 register_tortoise(app, config=TORTOISE_CONFIG)
 
 if __name__ == '__main__':
