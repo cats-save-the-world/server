@@ -37,7 +37,6 @@ class GameEventsHandler:
                 'type': EventType.STATE,
                 'payload': self._game_controller.state,
             })
-
             await sleep(self.SEND_INTERVAL)
 
     async def _receive(self) -> None:
