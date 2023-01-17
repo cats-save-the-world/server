@@ -18,7 +18,6 @@ async def game_create_handler(user: User = Depends(get_user)):  # type: ignore[n
 
 class GameEventsHandler:
     SEND_INTERVAL = 0.1
-    CHECK_STATE_INTERVAL = 0.1
 
     async def _authorize(self) -> User:
         data = await self._websocket.receive_json()
