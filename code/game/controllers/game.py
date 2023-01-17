@@ -1,7 +1,7 @@
 from asyncio import create_task, sleep
 
 from code.game.consts import CatStatus, ControlAction, GameStatus, PLANET_DISTANCE
-from code.game.exceptions import PlanedDiedException, GameEndException
+from code.game.exceptions import GameEndException, PlanedDiedException
 from .cat import CatController
 from .enemies import EnemiesController
 from .planet import PlanetController
