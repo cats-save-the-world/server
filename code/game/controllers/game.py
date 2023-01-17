@@ -21,9 +21,6 @@ class GameController:
         while True:
             self.tick()
 
-            if self._status == GameStatus.END:
-                raise GameEndException
-
             await sleep(self.TICK_INTERVAL)
 
     def stop_clock(self) -> None:
@@ -50,18 +47,14 @@ class GameController:
 
     @property
     def state(self) -> dict:
-        state = {
-            'game': {'status': self._status},
+        if self._status == GameStatus.END:
+            raise GameEndException
+
+        return {
+            'cat': self._cat.state,
+            'enemies': self._enemies.state,
+            'planet': self._planet.state,
         }
-
-        if self._status == GameStatus.RUN:
-            state.update({
-                'cat': self._cat.state,
-                'enemies': self._enemies.state,
-                'planet': self._planet.state,
-            })
-
-        return state
 
     def control(self, control_action: ControlAction) -> None:
         self._cat.control_action = control_action

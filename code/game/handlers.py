@@ -8,6 +8,7 @@ from code.auth.exceptions import InvalidCredentials
 from code.auth.utils import get_user_by_credentials
 from code.game.consts import EventType
 from code.game.controllers import GameController
+from code.game.exceptions import GameEndException
 from code.models import Game, User
 
 
@@ -28,15 +29,33 @@ class GameEventsHandler:
         payload = data['payload']
         return await get_user_by_credentials(payload['username'], payload['password'])
 
-    async def _active_game_exists(self, game_id: UUID, user: User) -> bool:
-        return await Game.filter(id=game_id, user=user, is_active=True).exists()
+    async def _get_active_game(self, game_id: UUID, user: User) -> Game:
+        return await Game.filter(id=game_id, user=user, is_active=True).first()
 
-    async def _send_state(self) -> None:
+    async def _send_state(self, game_state: dict) -> None:
+        await self._websocket.send_json({
+            'type': EventType.STATE,
+            'payload': game_state,
+        })
+
+    async def _end_game(self) -> None:
+        self.game.is_active = False
+        await self.game.save()
+
+        await self._websocket.send_json({
+            'type': EventType.GAME_END,
+        })
+        await self._websocket.close()
+
+    async def _process_answer(self) -> None:
         while True:
-            await self._websocket.send_json({
-                'type': EventType.STATE,
-                'payload': self._game_controller.state,
-            })
+            try:
+                game_state = self._game_controller.state
+                await self._send_state(game_state)
+            except GameEndException:
+                await self._end_game()
+                return
+
             await sleep(self.SEND_INTERVAL)
 
     async def _receive(self) -> None:
@@ -56,10 +75,12 @@ class GameEventsHandler:
         except InvalidCredentials:
             return await self._websocket.close()
 
-        if not await self._active_game_exists(game_id, user):
+        self.game = await self._get_active_game(game_id, user)
+
+        if not self.game:
             return await self._websocket.close()
 
-        task = create_task(self._send_state())
+        task = create_task(self._process_answer())
 
         try:
             while True:
