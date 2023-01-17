@@ -1,4 +1,4 @@
-from code.game.exceptions import DamageLimitException
+from code.game.exceptions import PlanedDiedException
 
 
 class PlanetController:
@@ -11,7 +11,7 @@ class PlanetController:
         self._health = max(self._health - damage, 0)
 
         if self._health == 0:
-            raise DamageLimitException
+            raise PlanedDiedException
 
     @property
     def state(self) -> dict:

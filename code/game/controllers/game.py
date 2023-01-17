@@ -1,7 +1,7 @@
 from asyncio import create_task, sleep
 
 from code.game.consts import CatStatus, ControlAction, GameStatus, PLANET_DISTANCE
-from code.game.exceptions import DamageLimitException
+from code.game.exceptions import PlanedDiedException, GameEndException
 from .cat import CatController
 from .enemies import EnemiesController
 from .planet import PlanetController
@@ -15,11 +15,15 @@ class GameController:
         self._enemies = EnemiesController()
         self._planet = PlanetController()
         self._clock_task = create_task(self._start_clock())
-        self._status = GameStatus.RUNNING
+        self._status = GameStatus.RUN
 
     async def _start_clock(self) -> None:
         while True:
             self.tick()
+
+            if self._status == GameStatus.END:
+                raise GameEndException
+
             await sleep(self.TICK_INTERVAL)
 
     def stop_clock(self) -> None:
@@ -41,7 +45,7 @@ class GameController:
                 try:
                     self._planet.get_damage(enemy.damage)
                     self._enemies.remove_enemy(enemy.id)
-                except DamageLimitException:
+                except PlanedDiedException:
                     self._status = GameStatus.END
 
     @property
@@ -50,7 +54,7 @@ class GameController:
             'game': {'status': self._status},
         }
 
-        if self._status == GameStatus.RUNNING:
+        if self._status == GameStatus.RUN:
             state.update({
                 'cat': self._cat.state,
                 'enemies': self._enemies.state,

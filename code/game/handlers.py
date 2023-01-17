@@ -6,7 +6,7 @@ from fastapi import Depends, WebSocket, WebSocketDisconnect
 from code.auth.dependencies import get_user
 from code.auth.exceptions import InvalidCredentials
 from code.auth.utils import get_user_by_credentials
-from code.game.consts import EventType, GameStatus
+from code.game.consts import EventType
 from code.game.controllers import GameController
 from code.models import Game, User
 
@@ -37,10 +37,6 @@ class GameEventsHandler:
                 'type': EventType.STATE,
                 'payload': self._game_controller.state,
             })
-
-            if self._game_controller.state['game']['status'] == GameStatus.END:
-                await self._websocket.close()
-                return
 
             await sleep(self.SEND_INTERVAL)
 

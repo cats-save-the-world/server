@@ -31,7 +31,7 @@ class CatDirection(StrEnum):
 
 @unique
 class GameStatus(StrEnum):
-    RUNNING = 'run'
+    RUN = 'run'
     END = 'end'
 
 
