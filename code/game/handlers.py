@@ -6,7 +6,7 @@ from fastapi import Depends, WebSocket, WebSocketDisconnect
 from code.auth.dependencies import get_user
 from code.auth.exceptions import InvalidCredentials
 from code.auth.utils import get_user_by_credentials
-from code.game.consts import EventType
+from code.game.consts import EventType, GameStatus
 from code.game.controllers import GameController
 from code.models import Game, User
 
@@ -18,6 +18,7 @@ async def game_create_handler(user: User = Depends(get_user)):  # type: ignore[n
 
 class GameEventsHandler:
     SEND_INTERVAL = 0.1
+    CHECK_STATE_INTERVAL = 0.1
 
     async def _authorize(self) -> User:
         data = await self._websocket.receive_json()
@@ -33,17 +34,15 @@ class GameEventsHandler:
 
     async def _send_state(self) -> None:
         while True:
-            game_state = self._game_controller.state
+            await self._websocket.send_json({
+                'type': EventType.STATE,
+                'payload': self._game_controller.state,
+            })
 
-            if not game_state:
-                await self._websocket.send_json(
-                    {'type': EventType.GAME_END}
-                )
-            else:
-                await self._websocket.send_json({
-                    'type': EventType.STATE,
-                    'payload': self._game_controller.state,
-                })
+            if self._game_controller.state['game']['status'] == GameStatus.END:
+                await self._websocket.close()
+                return
+
             await sleep(self.SEND_INTERVAL)
 
     async def _receive(self) -> None:

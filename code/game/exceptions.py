@@ -1,0 +1,2 @@
+class DamageLimitException(Exception):
+    pass

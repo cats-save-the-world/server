@@ -29,6 +29,12 @@ class CatDirection(StrEnum):
     RIGHT = 'right'
 
 
+@unique
+class GameStatus(StrEnum):
+    RUNNING = 'running'
+    END = 'end'
+
+
 PLANET_DISTANCE = 160
 CAT_RADIUS = 15
 LEVEL_INTERVAL = 20

@@ -1,6 +1,7 @@
 from asyncio import create_task, sleep
 
-from code.game.consts import CatStatus, ControlAction, PLANET_DISTANCE
+from code.game.consts import CatStatus, ControlAction, GameStatus, PLANET_DISTANCE
+from code.game.exceptions import DamageLimitException
 from .cat import CatController
 from .enemies import EnemiesController
 from .planet import PlanetController
@@ -14,6 +15,7 @@ class GameController:
         self._enemies = EnemiesController()
         self._planet = PlanetController()
         self._clock_task = create_task(self._start_clock())
+        self._status = GameStatus.RUNNING
 
     async def _start_clock(self) -> None:
         while True:
@@ -36,19 +38,24 @@ class GameController:
                 self._enemies.remove_enemy(enemy.id)
 
             elif enemy.distance < PLANET_DISTANCE:
-                self._planet.get_damage(enemy.damage)
-                self._enemies.remove_enemy(enemy.id)
+                try:
+                    self._planet.get_damage(enemy.damage)
+                    self._enemies.remove_enemy(enemy.id)
+                except DamageLimitException:
+                    self._status = GameStatus.END
 
     @property
     def state(self) -> dict:
-        if self._planet.state['damage'] >= 1:
-            return {}
+        state = {'game': {'status': self._status}}
 
-        return {
-            'cat': self._cat.state,
-            'enemies': self._enemies.state,
-            'planet': self._planet.state,
-        }
+        if self._status == GameStatus.RUNNING:
+            state.update({
+                'cat': self._cat.state,
+                'enemies': self._enemies.state,
+                'planet': self._planet.state,
+            })
+
+        return state
 
     def control(self, control_action: ControlAction) -> None:
         self._cat.control_action = control_action
