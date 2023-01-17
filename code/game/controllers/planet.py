@@ -8,10 +8,10 @@ class PlanetController:
         self._health = self.MAX_HEALTH
 
     def get_damage(self, damage: int) -> None:
-        if self._health - damage <= 0:
-            raise DamageLimitException
+        self._health = max(self._health - damage, 0)
 
-        self._health -= damage
+        if self._health == 0:
+            raise DamageLimitException
 
     @property
     def state(self) -> dict:
