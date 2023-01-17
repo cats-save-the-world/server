@@ -46,7 +46,9 @@ class GameController:
 
     @property
     def state(self) -> dict:
-        state = {'game': {'status': self._status}}
+        state = {
+            'game': {'status': self._status},
+        }
 
         if self._status == GameStatus.RUNNING:
             state.update({
