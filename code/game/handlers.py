@@ -18,7 +18,6 @@ async def game_create_handler(user: User = Depends(get_user)):  # type: ignore[n
 
 
 async def guest_game_create_handler():  # type: ignore[no-untyped-def]
-    print(1)
     game = await Game.create()
     return {'game_id': game.id}
 
