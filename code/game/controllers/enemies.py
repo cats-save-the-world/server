@@ -3,7 +3,7 @@ from time import time
 from typing import Type
 from uuid import UUID
 
-from code.consts import LEVEL_INTERVAL
+from code.game.consts import LEVEL_INTERVAL
 from .enemy import (
     EnemyController, HeavyEnemyController, LightEnemyController, SimpleEnemyController,
     TwistedEnemyController,

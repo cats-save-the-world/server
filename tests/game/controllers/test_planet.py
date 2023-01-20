@@ -1,6 +1,6 @@
 import pytest
 
-from code.controllers.planet import PlanetController
+from code.game.controllers.planet import PlanetController
 
 
 @pytest.mark.parametrize('health, damage', [

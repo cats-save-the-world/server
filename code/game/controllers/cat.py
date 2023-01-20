@@ -1,4 +1,4 @@
-from code.consts import CAT_RADIUS, CatDirection, CatStatus, ControlActionType, PLANET_DISTANCE
+from code.game.consts import CAT_RADIUS, CatDirection, CatStatus, ControlAction, PLANET_DISTANCE
 from ._rotatable import RotatableController
 
 
@@ -13,7 +13,7 @@ class CatController(RotatableController):
         self._speed = 0
         self._status = CatStatus.IDLE
         self._direction = CatDirection.RIGHT
-        self._control_action = ControlActionType.STOP
+        self._control_action = ControlAction.STOP
 
     @property
     def state(self) -> dict:
@@ -24,16 +24,16 @@ class CatController(RotatableController):
         }
 
     @property
-    def control_action(self) -> ControlActionType:
+    def control_action(self) -> ControlAction:
         return self._control_action
 
     @control_action.setter
-    def control_action(self, value: ControlActionType) -> None:
+    def control_action(self, value: ControlAction) -> None:
         self._control_action = value
 
-        if value == ControlActionType.LEFT:
+        if value == ControlAction.LEFT:
             self._direction = CatDirection.LEFT
-        elif value == ControlActionType.RIGHT:
+        elif value == ControlAction.RIGHT:
             self._direction = CatDirection.RIGHT
 
     @property
@@ -45,13 +45,13 @@ class CatController(RotatableController):
         self._status = value
 
     def _update_speed(self) -> None:
-        if self._control_action == ControlActionType.RIGHT:
+        if self._control_action == ControlAction.RIGHT:
             self._speed = min(self._speed + self.ACCELERATION_SPEED, self.MAX_SPEED)
 
-        elif self._control_action == ControlActionType.LEFT:
+        elif self._control_action == ControlAction.LEFT:
             self._speed = max(self._speed - self.ACCELERATION_SPEED, -self.MAX_SPEED)
 
-        elif self._control_action == ControlActionType.STOP:
+        elif self._control_action == ControlAction.STOP:
             if self._speed > 0:
                 self._speed = max(self._speed - self.BRAKING_SPEED, 0)
             else:
