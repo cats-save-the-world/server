@@ -1,7 +1,7 @@
 from asyncio import create_task, sleep
 from uuid import UUID
 
-from fastapi import Depends, WebSocket, WebSocketDisconnect
+from fastapi import Depends, Response, status, WebSocket, WebSocketDisconnect
 
 from code.auth.dependencies import get_user
 from code.auth.exceptions import InvalidCredentials
@@ -19,6 +19,18 @@ async def game_create_handler(user: User = Depends(get_user)):  # type: ignore[n
 async def guest_game_create_handler():  # type: ignore[no-untyped-def]
     game = await Game.create()
     return {'game_id': game.id}
+
+
+async def assign_guest_game(game_id: UUID, user: User = Depends(get_user)):  # type: ignore[no-untyped-def]
+    game = await Game.get_or_none(id=game_id, user=None).select_related('user')
+
+    if not game:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
+
+    game.user = user
+    await game.save()
+
+    return Response(status_code=status.HTTP_200_OK)
 
 
 class GameEventsHandler:
