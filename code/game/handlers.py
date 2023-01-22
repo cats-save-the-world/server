@@ -47,17 +47,13 @@ class GameEventsHandler:
         self.game.is_active = False
         await self.game.save()
 
-        await self._websocket.send_json({
-            'type': EventType.GAME_END,
-        })
-        await self._websocket.close()
-
     async def _process_answer(self) -> None:
         while True:
             try:
                 game_state = self._game_controller.state
                 await self._send_state(game_state)
             except GameEndException:
+                await self._websocket.send_json({'type': EventType.GAME_END})
                 await self._end_game()
                 return
 
@@ -94,5 +90,6 @@ class GameEventsHandler:
             while True:
                 await self._receive()
         except WebSocketDisconnect:
+            await self._end_game()
             self._game_controller.stop_clock()
             task.cancel()
