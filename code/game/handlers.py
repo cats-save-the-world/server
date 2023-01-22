@@ -37,23 +37,25 @@ class GameEventsHandler:
     async def _get_game(self, game_id: UUID) -> Game | None:
         return await Game.get_or_none(id=game_id, is_active=True).select_related('user')
 
-    async def _send_state(self, game_state: dict) -> None:
-        await self._websocket.send_json({
-            'type': EventType.STATE,
-            'payload': game_state,
-        })
-
     async def _end_game(self) -> None:
         self.game.is_active = False
         await self.game.save()
+
+    async def _send_state(self, event_type: EventType, payload: dict = None) -> None:
+        state = {'type': event_type}
+
+        if payload:
+            state.update({'payload': payload})
+
+        await self._websocket.send_json(state)
 
     async def _process_answer(self) -> None:
         while True:
             try:
                 game_state = self._game_controller.state
-                await self._send_state(game_state)
+                await self._send_state(EventType.STATE, game_state)
             except GameEndException:
-                await self._websocket.send_json({'type': EventType.GAME_END})
+                await self._send_state(EventType.GAME_END)
                 await self._end_game()
                 return
 
