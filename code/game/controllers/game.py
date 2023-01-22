@@ -20,7 +20,6 @@ class GameController:
     async def _start_clock(self) -> None:
         while True:
             self.tick()
-
             await sleep(self.TICK_INTERVAL)
 
     def stop_clock(self) -> None:
