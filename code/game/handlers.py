@@ -1,4 +1,5 @@
 from asyncio import create_task, sleep
+from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends, WebSocket, WebSocketDisconnect
@@ -41,8 +42,8 @@ class GameEventsHandler:
         self.game.is_active = False
         await self.game.save()
 
-    async def _send_state(self, event_type: EventType, payload: dict = None) -> None:
-        state = {'type': event_type}
+    async def _send_state(self, event_type: EventType, payload: Optional[dict] = None) -> None:
+        state: dict = {'type': event_type}
 
         if payload:
             state.update({'payload': payload})
