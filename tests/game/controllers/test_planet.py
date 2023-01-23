@@ -12,7 +12,6 @@ from code.game.exceptions import GameOver
 def test_state(health: int, damage: int) -> None:
     controller = PlanetController()
     controller._health = health
-
     assert controller.state['damage'] == damage
 
 
