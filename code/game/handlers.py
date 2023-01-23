@@ -21,15 +21,16 @@ async def guest_game_create_handler():  # type: ignore[no-untyped-def]
     return {'game_id': game.id}
 
 
-async def assign_guest_game(game_id: UUID, user: User = Depends(get_user)):  # type: ignore[no-untyped-def]
+async def assign_guest_game(
+    game_id: UUID, user: User = Depends(get_user),
+):  # type: ignore[no-untyped-def]
     game = await Game.get_or_none(id=game_id, user=None).select_related('user')
 
     if not game:
         return Response(status_code=status.HTTP_404_NOT_FOUND)
 
     game.user = user
-    await game.save()
-
+    await game.save(update_fields=['user'])
     return Response(status_code=status.HTTP_200_OK)
 
 
