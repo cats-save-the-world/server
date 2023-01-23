@@ -18,3 +18,4 @@ async def test_user_create_handler_failure(client: AsyncClient, user: User) -> N
         '/auth/users', json={'username': 'username', 'password': 'password'},
     )
     assert response.status_code == status.HTTP_409_CONFLICT
+
