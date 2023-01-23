@@ -1,3 +1,6 @@
+from code.game.exceptions import GameOver
+
+
 class PlanetController:
     MAX_HEALTH = 100
 
@@ -6,6 +9,9 @@ class PlanetController:
 
     def get_damage(self, damage: int) -> None:
         self._health = max(self._health - damage, 0)
+
+        if self._health == 0:
+            raise GameOver
 
     @property
     def state(self) -> dict:
