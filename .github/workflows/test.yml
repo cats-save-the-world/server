@@ -8,6 +8,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      server-db:
+        image: postgres:alpine
+        env:
+          POSTGRES_PASSWORD: postgres
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -21,3 +26,6 @@ jobs:
       - run: mypy --strict .
         continue-on-error: true
       - run: pytest
+        env:
+          DATABASE_URL: postgres://postgres:postgres@server-db/postgres
+          TEST_DATABASE_URL: postgres://postgres:postgres@server-db/test
