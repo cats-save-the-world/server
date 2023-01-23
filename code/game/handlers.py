@@ -49,7 +49,7 @@ class GameEventsHandler:
     async def _get_game(self, game_id: UUID) -> Game | None:
         return await Game.get_or_none(id=game_id, is_active=True).select_related('user')
 
-    async def _send_state(self) -> None:
+    async def _send_events(self) -> None:
         while not self._game_controller.game_over:
             await self._websocket.send_json({
                 'type': EventType.STATE,
@@ -84,7 +84,7 @@ class GameEventsHandler:
             if game.user != user:
                 return await self._websocket.close()
 
-        task = create_task(self._send_state())
+        task = create_task(self._send_events())
 
         try:
             while True:
