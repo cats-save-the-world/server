@@ -21,9 +21,9 @@ async def guest_game_create_handler():  # type: ignore[no-untyped-def]
     return {'game_id': game.id}
 
 
-async def assign_guest_game(
+async def assign_guest_game(  # type: ignore[no-untyped-def]
     game_id: UUID, user: User = Depends(get_user),
-):  # type: ignore[no-untyped-def]
+):
     game = await Game.get_or_none(id=game_id, user=None).select_related('user')
 
     if not game:
@@ -50,12 +50,14 @@ class GameEventsHandler:
         return await Game.get_or_none(id=game_id, is_active=True).select_related('user')
 
     async def _send_state(self) -> None:
-        while True:
+        while not self._game_controller.game_over:
             await self._websocket.send_json({
                 'type': EventType.STATE,
                 'payload': self._game_controller.state,
             })
             await sleep(self.SEND_INTERVAL)
+
+        await self._websocket.send_json({'type': EventType.GAME_OVER})
 
     async def _receive(self) -> None:
         data = await self._websocket.receive_json()
