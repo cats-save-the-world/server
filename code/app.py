@@ -16,7 +16,7 @@ app.add_middleware(
 )
 app.include_router(auth.router, prefix='/auth')
 app.include_router(game.router, prefix='/games')
+register_tortoise(app, config=TORTOISE_CONFIG)
 
 if __name__ == '__main__':
-    register_tortoise(app, config=TORTOISE_CONFIG)
     uvicorn.run('code.app:app', host='0.0.0.0', reload=settings.debug)
