@@ -8,6 +8,7 @@ from code.auth.exceptions import InvalidCredentials
 from code.auth.utils import get_user_by_credentials
 from code.game.consts import EventType
 from code.game.controllers import GameController
+from code.game.utils import get_game, update_game_status
 from code.models import Game, User
 
 
@@ -46,9 +47,6 @@ class GameEventsHandler:
         payload = data['payload']
         return await get_user_by_credentials(payload['username'], payload['password'])
 
-    async def _get_game(self, game_id: UUID) -> Game | None:
-        return await Game.get_or_none(id=game_id, is_active=True).select_related('user')
-
     async def _send_events(self) -> None:
         while not self._game_controller.game_over:
             await self._websocket.send_json({
@@ -58,6 +56,7 @@ class GameEventsHandler:
             await sleep(self.SEND_INTERVAL)
 
         await self._websocket.send_json({'type': EventType.GAME_OVER})
+        await update_game_status(self._game, Game.Status.FINISHED)
 
     async def _receive(self) -> None:
         data = await self._websocket.receive_json()
@@ -68,22 +67,23 @@ class GameEventsHandler:
     async def __call__(self, websocket: WebSocket, game_id: UUID):  # type: ignore[no-untyped-def]
         self._websocket = websocket
         self._game_controller = GameController()
+        self._game = await get_game(game_id)
 
         await self._websocket.accept()
-        game = await self._get_game(game_id)
 
-        if not game:
+        if not self._game:
             return await self._websocket.close()
 
-        if game.user:
+        if self._game.user:
             try:
                 user = await self._authorize()
             except InvalidCredentials:
                 return await self._websocket.close()
 
-            if game.user != user:
+            if self._game.user != user:
                 return await self._websocket.close()
 
+        await update_game_status(self._game, Game.Status.ACTIVE)
         task = create_task(self._send_events())
 
         try:
@@ -92,3 +92,4 @@ class GameEventsHandler:
         except WebSocketDisconnect:
             self._game_controller.stop_clock()
             task.cancel()
+            await update_game_status(self._game, Game.Status.FINISHED)
