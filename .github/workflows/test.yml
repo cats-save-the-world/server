@@ -16,6 +16,9 @@ jobs:
           POSTGRES_DB: postgres
           POSTGRES_PASSWORD: postgres
         options: --health-cmd pg_isready --health-interval 3s
+        healthcheck:
+          test: pg_isready -U postgres
+          interval: 3s
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4

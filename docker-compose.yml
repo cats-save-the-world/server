@@ -24,7 +24,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
     healthcheck:
-      test: pg_isready
+      test: pg_isready -U postgres
       interval: 3s
     ports:
       - '5432:5432'
