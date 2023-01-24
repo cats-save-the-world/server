@@ -16,3 +16,13 @@ async def get_game(game_id: UUID) -> Game | None:
 async def update_game_status(game: Game, status: Game.Status) -> None:
     game.status = status
     await game.save(update_fields=['status'])
+
+
+async def update_game_score(game: Game, score: int) -> None:
+    game.score = score
+    await game.save(update_fields=['score'])
+
+
+async def finish_game(game: Game, score: int) -> None:
+    await update_game_status(game, Game.Status.FINISHED)
+    await update_game_score(game, score)
