@@ -1,5 +1,5 @@
 from code.game.consts import CAT_RADIUS, CatDirection, CatStatus, ControlAction, PLANET_DISTANCE
-from ._rotatable import CircleController
+from ._circle import CircleController
 
 
 class CatController(CircleController):

@@ -1,7 +1,7 @@
 from random import choice, uniform
 from uuid import uuid4
 
-from ._rotatable import CircleController
+from ._circle import CircleController
 
 
 class EnemyController(CircleController):

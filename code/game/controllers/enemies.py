@@ -1,6 +1,6 @@
 from random import choice
 from time import time
-from typing import Type, Generator
+from typing import Generator, Type
 from uuid import UUID
 
 from code.game.consts import LEVEL_INTERVAL
