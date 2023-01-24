@@ -10,7 +10,7 @@ class User(Model):
     password_hash = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
-    currency = fields.IntField(default=0)
+    balance = fields.IntField(default=0)
 
     class Meta:
         table = 'users'
