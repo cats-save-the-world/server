@@ -12,5 +12,5 @@ from code.game.utils import get_distance_between_points
         (Point(x=-5, y=-8), Point(x=44, y=85), 105.12),
     ],
 )
-def test_get_distance_between_points(a: Point, b: Point, distance: float):
+def test_get_distance_between_points(a: Point, b: Point, distance: float) -> None:
     assert round(get_distance_between_points(a, b), 2) == distance

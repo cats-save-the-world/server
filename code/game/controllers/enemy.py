@@ -1,10 +1,10 @@
 from random import choice, uniform
 from uuid import uuid4
 
-from ._rotatable import RotatableController
+from ._rotatable import CircleController
 
 
-class EnemyController(RotatableController):
+class EnemyController(CircleController):
     INITIAL_DISTANCE = 1000
     MIN_ANGLE = 0
     MAX_ANGLE = 359
