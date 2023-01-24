@@ -10,6 +10,7 @@ class User(Model):
     password_hash = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
+    money = fields.IntField(default=0)
 
     class Meta:
         table = 'users'
@@ -28,6 +29,7 @@ class Game(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
     status = fields.CharEnumField(Status, default=Status.NEW)
+    score = fields.IntField(default=0)
 
     class Meta:
         table = 'games'
