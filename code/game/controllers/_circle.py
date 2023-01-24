@@ -4,7 +4,7 @@ from code.game.structures import Point
 from code.game.utils import get_distance_between_points
 
 
-class RotatableController:
+class CircleController:
     radius: int
 
     def __init__(self, angle: float, distance: int) -> None:
@@ -24,5 +24,5 @@ class RotatableController:
             'distance': self.distance,
         }
 
-    def intersects(self, other: 'RotatableController') -> bool:
+    def intersects(self, other: 'CircleController') -> bool:
         return self.radius + other.radius > get_distance_between_points(self.center, other.center)

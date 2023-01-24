@@ -1,7 +1,4 @@
-from asyncio import create_task, sleep
-
 from code.game.consts import CatStatus, ControlAction, PLANET_DISTANCE
-from code.game.exceptions import GameOver
 from .cat import CatController
 from .enemies import EnemiesController
 from .planet import PlanetController
@@ -14,24 +11,7 @@ class GameController:
         self._cat = CatController()
         self._enemies = EnemiesController()
         self._planet = PlanetController()
-        self._clock_task = create_task(self._start_clock())
         self.score = 0
-
-    async def _start_clock(self) -> None:
-        while True:
-            try:
-                self.tick()
-            except GameOver:
-                break
-
-            await sleep(self.TICK_INTERVAL)
-
-    def stop_clock(self) -> None:
-        self._clock_task.cancel()
-
-    @property
-    def game_over(self) -> bool:
-        return self._clock_task.done()
 
     def tick(self) -> None:
         self._cat.tick()

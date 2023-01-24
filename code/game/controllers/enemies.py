@@ -1,6 +1,6 @@
 from random import choice
 from time import time
-from typing import Type
+from typing import Generator, Type
 from uuid import UUID
 
 from code.game.consts import LEVEL_INTERVAL
@@ -18,7 +18,7 @@ class EnemiesController:
         self._last_spawn = time()
         self._start_time = time()
 
-    def __iter__(self):
+    def __iter__(self) -> Generator:
         for enemy in self._enemies:
             yield enemy
 

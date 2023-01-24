@@ -1,8 +1,8 @@
 from code.game.consts import CAT_RADIUS, CatDirection, CatStatus, ControlAction, PLANET_DISTANCE
-from ._rotatable import RotatableController
+from ._circle import CircleController
 
 
-class CatController(RotatableController):
+class CatController(CircleController):
     ACCELERATION_SPEED = 2
     BRAKING_SPEED = 1
     MAX_SPEED = 10
