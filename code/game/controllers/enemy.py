@@ -35,7 +35,7 @@ class SimpleEnemyController(EnemyController):
     radius = 10
     damage = 10
     type = 'simple'  # noqa: A003
-    score = 10
+    score = 100
 
 
 class HeavyEnemyController(EnemyController):
@@ -43,7 +43,7 @@ class HeavyEnemyController(EnemyController):
     radius = 20
     damage = 20
     type = 'heavy'  # noqa: A003
-    score = 15
+    score = 150
 
 
 class LightEnemyController(EnemyController):
@@ -51,7 +51,7 @@ class LightEnemyController(EnemyController):
     radius = 10
     damage = 5
     type = 'light'  # noqa: A003
-    score = 20
+    score = 200
 
 
 class TwistedEnemyController(EnemyController):
@@ -60,7 +60,7 @@ class TwistedEnemyController(EnemyController):
     radius = 10
     damage = 10
     type = 'twisted'  # noqa: A003
-    score = 15
+    score = 150
 
     def __init__(self) -> None:
         super().__init__()
