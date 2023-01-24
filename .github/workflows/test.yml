@@ -26,8 +26,7 @@ jobs:
           pip install pipenv
           pipenv install --system --deploy --ignore-pipfile --dev
       - run: flake8 .
-      - run: mypy --strict .
-        continue-on-error: true
+      - run: mypy .
       - run: pytest
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost/postgres
