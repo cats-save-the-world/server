@@ -1,6 +1,8 @@
 from math import sqrt
 from uuid import UUID
 
+from tortoise import transactions
+
 from code.game.structures import Point
 from code.models import Game
 
@@ -24,5 +26,6 @@ async def update_game_score(game: Game, score: int) -> None:
 
 
 async def finish_game(game: Game, score: int) -> None:
-    await update_game_status(game, Game.Status.FINISHED)
-    await update_game_score(game, score)
+    async with transactions.in_transaction():
+        await update_game_status(game, Game.Status.FINISHED)
+        await update_game_score(game, score)
