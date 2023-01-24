@@ -21,7 +21,7 @@ async def update_game_status(game: Game, status: Game.Status) -> None:
 
 async def finish_game(game: Game, score: int) -> None:
     game.score = score
-    game.finished_at = datetime.now()
+    game.finished_at = datetime.utcnow()
     game.status = Game.Status.FINISHED
 
     await game.save(update_fields=['score', 'finished_at', 'status'])

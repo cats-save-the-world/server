@@ -15,7 +15,7 @@ class GameController:
         self._enemies = EnemiesController()
         self._planet = PlanetController()
         self._clock_task = create_task(self._start_clock())
-        self.score: int = 0
+        self.score = 0
 
     async def _start_clock(self) -> None:
         while True:
