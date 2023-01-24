@@ -1,9 +1,6 @@
 from datetime import datetime
-
 from math import sqrt
 from uuid import UUID
-
-from tortoise import transactions
 
 from code.game.structures import Point
 from code.models import Game
