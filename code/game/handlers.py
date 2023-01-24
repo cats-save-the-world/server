@@ -8,7 +8,7 @@ from code.auth.exceptions import InvalidCredentials
 from code.auth.utils import get_user_by_credentials
 from code.game.consts import EventType
 from code.game.controllers import GameController
-from code.game.utils import get_game, update_game_status, finish_game
+from code.game.utils import finish_game, get_game, update_game_status
 from code.models import Game, User
 
 
@@ -58,8 +58,8 @@ class GameEventsHandler:
         await self._websocket.send_json({
             'type': EventType.GAME_OVER,
             'payload': {
-                'score': self._game_controller.score
-            }
+                'score': self._game_controller.score,
+            },
         })
         await finish_game(self._game, self._game_controller.score)
 
