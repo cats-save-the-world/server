@@ -10,6 +10,7 @@ class User(Model):
     password_hash = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
+    balance = fields.IntField(default=0)
 
     class Meta:
         table = 'users'
@@ -27,7 +28,9 @@ class Game(Model):
     )  # type: ignore[var-annotated]
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
+    finished_at = fields.DatetimeField(default=None, null=True)
     status = fields.CharEnumField(Status, default=Status.NEW)
+    score = fields.IntField(default=0)
 
     class Meta:
         table = 'games'

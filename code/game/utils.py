@@ -1,3 +1,4 @@
+from datetime import datetime
 from math import sqrt
 from uuid import UUID
 
@@ -16,3 +17,11 @@ async def get_game(game_id: UUID) -> Game | None:
 async def update_game_status(game: Game, status: Game.Status) -> None:
     game.status = status
     await game.save(update_fields=['status'])
+
+
+async def finish_game(game: Game, score: int) -> None:
+    game.score = score
+    game.finished_at = datetime.utcnow()
+    game.status = Game.Status.FINISHED
+
+    await game.save(update_fields=['score', 'finished_at', 'status'])

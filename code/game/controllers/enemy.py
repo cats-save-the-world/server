@@ -11,6 +11,7 @@ class EnemyController(RotatableController):
     damage: int
     speed: int
     type: str  # noqa: A003
+    score: int
 
     def __init__(self) -> None:
         angle = round(uniform(self.MIN_ANGLE, self.MAX_ANGLE), 2)
@@ -34,6 +35,7 @@ class SimpleEnemyController(EnemyController):
     radius = 10
     damage = 10
     type = 'simple'  # noqa: A003
+    score = 100
 
 
 class HeavyEnemyController(EnemyController):
@@ -41,6 +43,7 @@ class HeavyEnemyController(EnemyController):
     radius = 20
     damage = 20
     type = 'heavy'  # noqa: A003
+    score = 150
 
 
 class LightEnemyController(EnemyController):
@@ -48,6 +51,7 @@ class LightEnemyController(EnemyController):
     radius = 10
     damage = 5
     type = 'light'  # noqa: A003
+    score = 200
 
 
 class TwistedEnemyController(EnemyController):
@@ -56,6 +60,7 @@ class TwistedEnemyController(EnemyController):
     radius = 10
     damage = 10
     type = 'twisted'  # noqa: A003
+    score = 150
 
     def __init__(self) -> None:
         super().__init__()

@@ -8,7 +8,7 @@ from code.auth.exceptions import InvalidCredentials
 from code.auth.utils import get_user_by_credentials
 from code.game.consts import EventType
 from code.game.controllers import GameController
-from code.game.utils import get_game, update_game_status
+from code.game.utils import finish_game, get_game, update_game_status
 from code.models import Game, User
 
 
@@ -55,8 +55,13 @@ class GameEventsHandler:
             })
             await sleep(self.SEND_INTERVAL)
 
-        await self._websocket.send_json({'type': EventType.GAME_OVER})
-        await update_game_status(self._game, Game.Status.FINISHED)
+        await self._websocket.send_json({
+            'type': EventType.GAME_OVER,
+            'payload': {
+                'score': self._game_controller.score,
+            },
+        })
+        await finish_game(self._game, self._game_controller.score)
 
     async def _receive(self) -> None:
         data = await self._websocket.receive_json()
@@ -92,4 +97,4 @@ class GameEventsHandler:
         except WebSocketDisconnect:
             self._game_controller.stop_clock()
             task.cancel()
-            await update_game_status(self._game, Game.Status.FINISHED)
+            await finish_game(self._game, self._game_controller.score)
