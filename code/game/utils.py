@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from math import sqrt
 from uuid import UUID
 
@@ -20,12 +22,9 @@ async def update_game_status(game: Game, status: Game.Status) -> None:
     await game.save(update_fields=['status'])
 
 
-async def update_game_score(game: Game, score: int) -> None:
-    game.score = score
-    await game.save(update_fields=['score'])
-
-
 async def finish_game(game: Game, score: int) -> None:
-    async with transactions.in_transaction():
-        await update_game_status(game, Game.Status.FINISHED)
-        await update_game_score(game, score)
+    game.score = score
+    game.finished_at = datetime.now()
+    game.status = Game.Status.FINISHED
+
+    await game.save(update_fields=['score', 'finished_at', 'status'])

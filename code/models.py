@@ -28,6 +28,7 @@ class Game(Model):
     )  # type: ignore[var-annotated]
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
+    finished_at = fields.DatetimeField(default=None, null=True)
     status = fields.CharEnumField(Status, default=Status.NEW)
     score = fields.IntField(default=0)
 
