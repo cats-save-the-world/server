@@ -55,7 +55,12 @@ class GameEventsHandler:
             })
             await sleep(self.SEND_INTERVAL)
 
-        await self._websocket.send_json({'type': EventType.GAME_OVER})
+        await self._websocket.send_json({
+            'type': EventType.GAME_OVER,
+            'payload': {
+                'score': self._game_controller.score
+            }
+        })
         await update_game_status(self._game, Game.Status.FINISHED)
 
     async def _receive(self) -> None:
