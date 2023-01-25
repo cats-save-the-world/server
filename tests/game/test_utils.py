@@ -1,7 +1,7 @@
 import pytest
 
 from code.game.structures import Point
-from code.game.utils import get_distance_between_points, get_game
+from code.game.utils import get_distance_between_points, get_game, update_game_status
 from code.models import Game
 
 
@@ -20,3 +20,15 @@ def test_get_distance_between_points(a: Point, b: Point, distance: float) -> Non
 async def test_get_game(new_game: Game, active_game: Game) -> None:
     assert await get_game(new_game.id) == new_game
     assert await get_game(active_game.id) is None
+
+
+async def test_update_game_status(new_game: Game) -> None:
+    assert new_game.status == Game.Status.NEW
+
+    await update_game_status(new_game, Game.Status.ACTIVE)
+
+    assert new_game.status == Game.Status.ACTIVE
+
+    await update_game_status(new_game, Game.Status.FINISHED)
+
+    assert new_game.status == Game.Status.FINISHED
