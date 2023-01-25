@@ -21,14 +21,16 @@ class GameController:
 
     def handle_events(self) -> None:
         for enemy in self._enemies:
-            if self._cat.intersects(enemy):
-                self._cat.status = CatStatus.HITTING
-                self._enemies.remove_enemy(enemy.id)
+            if enemy.alive and self._cat.intersects(enemy):
+                enemy.alive = False
                 self._update_game_score(enemy.score)
+                self._cat.status = CatStatus.HITTING
 
-            elif enemy.distance < PLANET_DISTANCE:
-                self._planet.get_damage(enemy.damage)
+            if enemy.distance < PLANET_DISTANCE:
                 self._enemies.remove_enemy(enemy.id)
+
+                if enemy.alive:
+                    self._planet.get_damage(enemy.damage)
 
     def _update_game_score(self, score: int) -> None:
         self.score += score
