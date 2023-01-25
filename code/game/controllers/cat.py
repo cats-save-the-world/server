@@ -11,7 +11,7 @@ class CatController(CircleController):
     def __init__(self) -> None:
         super().__init__(angle=0, distance=PLANET_DISTANCE)
         self._speed = 0
-        self._status = CatStatus.IDLE
+        self.status = CatStatus.IDLE
         self._direction = CatDirection.RIGHT
         self._control_action = ControlAction.STOP
 
@@ -19,7 +19,7 @@ class CatController(CircleController):
     def state(self) -> dict:
         return {
             **super().state,
-            'status': self._status,
+            'status': self.status,
             'direction': self._direction,
         }
 
@@ -36,14 +36,6 @@ class CatController(CircleController):
         elif value == ControlAction.RIGHT:
             self._direction = CatDirection.RIGHT
 
-    @property
-    def status(self) -> CatStatus:
-        return self._status
-
-    @status.setter
-    def status(self, value: CatStatus) -> None:
-        self._status = value
-
     def _update_speed(self) -> None:
         if self._control_action == ControlAction.RIGHT:
             self._speed = min(self._speed + self.ACCELERATION_SPEED, self.MAX_SPEED)
@@ -58,7 +50,7 @@ class CatController(CircleController):
                 self._speed = min(self._speed + self.BRAKING_SPEED, 0)
 
     def _update_status(self) -> None:
-        self._status = CatStatus.IDLE if self._speed == 0 else CatStatus.RUNNING
+        self.status = CatStatus.IDLE if self._speed == 0 else CatStatus.RUNNING
 
     def _update_angle(self) -> None:
         self._angle += self._speed
