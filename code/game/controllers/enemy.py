@@ -17,6 +17,7 @@ class EnemyController(CircleController):
         angle = round(uniform(self.MIN_ANGLE, self.MAX_ANGLE), 2)
         super().__init__(angle=angle, distance=self.INITIAL_DISTANCE)
         self.id = uuid4()
+        self.alive = True
 
     @property
     def state(self) -> dict:
@@ -24,6 +25,8 @@ class EnemyController(CircleController):
             **super().state,
             'id': str(self.id),
             'type': self.type,
+            'alive': self.alive,
+            'score': self.score,
         }
 
     def tick(self) -> None:
