@@ -1,7 +1,7 @@
 import pytest
 
 from code.game.structures import Point
-from code.game.utils import get_distance_between_points, finish_game, get_game, update_game_status
+from code.game.utils import finish_game, get_distance_between_points, get_game, update_game_status
 from code.models import Game
 
 
