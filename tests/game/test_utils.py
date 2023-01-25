@@ -1,7 +1,8 @@
 import pytest
 
 from code.game.structures import Point
-from code.game.utils import get_distance_between_points
+from code.game.utils import get_distance_between_points, get_game
+from code.models import Game
 
 
 @pytest.mark.parametrize(
@@ -14,3 +15,8 @@ from code.game.utils import get_distance_between_points
 )
 def test_get_distance_between_points(a: Point, b: Point, distance: float) -> None:
     assert round(get_distance_between_points(a, b), 2) == distance
+
+
+async def test_get_game(new_game: Game, active_game: Game) -> None:
+    assert await get_game(new_game.id) == new_game
+    assert await get_game(active_game.id) is None
