@@ -39,19 +39,19 @@ class EnemiesController:
 
     def _get_enemy(self) -> EnemyController:
         available_enemy_types: list[Type[EnemyController]] = [SimpleEnemyController]
-        spawn_probabilities: list[int] = [100]
+        spawn_probabilities = [100]
 
         if self._start_time + LEVEL_INTERVAL < time():
             available_enemy_types.append(HeavyEnemyController)
-            spawn_probabilities = [65, 35]
+            spawn_probabilities = [70, 30]
 
         if self._start_time + 2 * LEVEL_INTERVAL < time():
             available_enemy_types.append(LightEnemyController)
-            spawn_probabilities = [50, 40, 10]
+            spawn_probabilities = [60, 20, 20]
 
         if self._start_time + 3 * LEVEL_INTERVAL < time():
             available_enemy_types.append(TwistedEnemyController)
-            spawn_probabilities = [20, 40, 15, 25]
+            spawn_probabilities = [40, 20, 20, 20]
 
         enemy = choices(available_enemy_types, weights=spawn_probabilities, k=1)[0]
 
