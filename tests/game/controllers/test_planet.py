@@ -24,15 +24,27 @@ def test_get_damage_full() -> None:
     assert controller._health == 0
 
 
-def test_get_heal() -> None:
+@pytest.mark.parametrize(
+    'damage, heal, has_exception, result_health', [
+        (30, 10, False, 80),
+        (50, 50, False, 100),
+        (70, 20, False, 50),
+        (100, 10, True, 0),
+    ],
+)
+def test_get_heal(damage: int, heal: int, has_exception: bool, result_health: int) -> None:
     controller = PlanetController()
 
-    controller.get_damage(30)
-    assert controller._health == 70
+    if has_exception:
+        with pytest.raises(GameOver):
+            controller.get_damage(damage)
+            controller.get_heal(heal)
 
-    controller.get_heal(10)
+    else:
+        controller.get_damage(damage)
+        controller.get_heal(heal)
 
-    assert controller._health == 80
+    assert controller._health == result_health
 
 
 def test_get_max_heal() -> None:
