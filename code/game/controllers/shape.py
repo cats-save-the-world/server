@@ -98,11 +98,11 @@ class SimpleHealController(HealController):
     radius = 10
     speed = 10
     heal = 5
-    type = 'simple_heal'
+    type = 'simple_heal'  # noqa: A003
 
 
 class HeavyHealController(HelperController):
     radius = 20
     speed = 20
     heal = 10
-    type = 'heavy_heal'
+    type = 'heavy_heal'  # noqa: A003

@@ -1,8 +1,8 @@
 from code.game.consts import CatStatus, ControlAction, PLANET_DISTANCE
 from .cat import CatController
-from .shapes import ShapesController
-from .shape import EnemyController, HealController
 from .planet import PlanetController
+from .shape import EnemyController, HealController
+from .shapes import ShapesController
 
 
 class GameController:

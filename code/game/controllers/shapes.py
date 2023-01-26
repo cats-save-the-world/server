@@ -5,8 +5,15 @@ from uuid import UUID
 
 from code.game.consts import LEVEL_INTERVAL
 from .shape import (
-    ShapeController, EnemyController, HeavyEnemyController, LightEnemyController, SimpleEnemyController,
-    TwistedEnemyController, HelperController, SimpleHealController, HeavyHealController
+    EnemyController,
+    HeavyEnemyController,
+    HeavyHealController,
+    HelperController,
+    LightEnemyController,
+    ShapeController,
+    SimpleEnemyController,
+    SimpleHealController,
+    TwistedEnemyController,
 )
 
 
