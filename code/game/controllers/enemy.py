@@ -74,9 +74,9 @@ class TwistedEnemyController(EnemyController):
         self._angle += self._angle_shift
 
 
-class HealEnemyController(EnemyController):
+class HealingEnemyController(EnemyController):
     speed = 15
     radius = 10
     damage = 10
-    type = 'heal'  # noqa: A003
+    type = 'healing'  # noqa: A003
     score = 0
