@@ -13,6 +13,9 @@ class PlanetController:
         if self._health == 0:
             raise GameOver
 
+    def get_heal(self, heal: int) -> None:
+        self._health = max(self._health + heal, 100)
+
     @property
     def state(self) -> dict:
         return {

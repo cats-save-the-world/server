@@ -5,8 +5,8 @@ from uuid import UUID
 
 from code.game.consts import LEVEL_INTERVAL
 from .enemy import (
-    EnemyController, HeavyEnemyController, LightEnemyController, SimpleEnemyController,
-    TwistedEnemyController,
+    EnemyController, HealEnemyController, HeavyEnemyController, LightEnemyController,
+    SimpleEnemyController, TwistedEnemyController,
 )
 
 
@@ -47,11 +47,12 @@ class EnemiesController:
 
         if self._start_time + 2 * LEVEL_INTERVAL < time():
             available_enemy_types.append(LightEnemyController)
-            spawn_probabilities = [60, 20, 20]
+            available_enemy_types.append(HealEnemyController)
+            spawn_probabilities = [50, 20, 20, 10]
 
         if self._start_time + 3 * LEVEL_INTERVAL < time():
             available_enemy_types.append(TwistedEnemyController)
-            spawn_probabilities = [40, 20, 20, 20]
+            spawn_probabilities = [30, 20, 20, 10, 20]
 
         enemy = choices(available_enemy_types, weights=spawn_probabilities, k=1)[0]
 
