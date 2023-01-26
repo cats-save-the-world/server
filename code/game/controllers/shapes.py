@@ -72,7 +72,7 @@ class ShapesController:
         return enemy()
 
     def _get_helper(self) -> HelperController | None:
-        available_healers = [SimpleHealController]
+        available_healers = [None]
         spawn_probabilities = [100]
 
         if self._start_time + 2 * LEVEL_INTERVAL < time():
