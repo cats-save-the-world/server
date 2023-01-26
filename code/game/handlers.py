@@ -102,6 +102,7 @@ async def game_events_handler(websocket: WebSocket, game_id: UUID):  # type: ign
         try:
             game_controller.tick()
         except GameOver:
+            await _send_state(websocket, game_controller)
             await _handle_game_over(websocket, game, game_controller)
             break
 
