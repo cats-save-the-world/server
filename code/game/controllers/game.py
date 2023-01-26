@@ -1,6 +1,7 @@
 from code.game.consts import CatStatus, ControlAction, PLANET_DISTANCE
 from .cat import CatController
-from .enemies import EnemiesController
+from .enemies import ShapesController
+from .enemy import EnemyController, HealController
 from .planet import PlanetController
 
 
@@ -9,28 +10,40 @@ class GameController:
 
     def __init__(self) -> None:
         self._cat = CatController()
-        self._enemies = EnemiesController()
+        self._shapes = ShapesController()
         self._planet = PlanetController()
         self.score = 0
 
     def tick(self) -> None:
         self._cat.tick()
-        self._enemies.tick()
+        self._shapes.tick()
 
         self.handle_events()
 
     def handle_events(self) -> None:
-        for enemy in self._enemies:
-            if enemy.alive and self._cat.intersects(enemy):
-                enemy.alive = False
-                self._update_game_score(enemy.score)
-                self._cat.status = CatStatus.HITTING
+        for shape in self._shapes:
+            if self._cat.intersects(shape):
+                self._handle_intersect_event(shape)
 
-            if enemy.distance < PLANET_DISTANCE:
-                self._enemies.remove_enemy(enemy.id)
+            if shape.distance < PLANET_DISTANCE:
+                self._handle_planet_contact_event(shape)
 
-                if enemy.alive:
-                    self._planet.get_damage(enemy.damage)
+    def _handle_intersect_event(self, shape: ShapesController) -> None:
+        if isinstance(shape, EnemyController):
+            shape.alive = False
+            self._update_game_score(shape.score)
+            self._cat.status = CatStatus.HITTING
+
+        elif isinstance(shape, HealController):
+            print('TOUCH')
+            self._planet.get_heal(shape.heal)
+
+    def _handle_planet_contact_event(self, shape: ShapesController) -> None:
+        if isinstance(shape, EnemyController):
+            if shape.alive:
+                self._planet.get_damage(shape.damage)
+
+        self._shapes.remove_shape(shape.id)
 
     def _update_game_score(self, score: int) -> None:
         self.score += score
@@ -39,7 +52,7 @@ class GameController:
     def state(self) -> dict:
         return {
             'cat': self._cat.state,
-            'enemies': self._enemies.state,
+            'enemies': self._shapes.state,
             'planet': self._planet.state,
             'score': self.score,
         }

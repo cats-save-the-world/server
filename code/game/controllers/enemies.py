@@ -5,37 +5,44 @@ from uuid import UUID
 
 from code.game.consts import LEVEL_INTERVAL
 from .enemy import (
-    EnemyController, HeavyEnemyController, LightEnemyController, SimpleEnemyController,
-    TwistedEnemyController,
+    ShapeController, EnemyController, HeavyEnemyController, LightEnemyController, SimpleEnemyController,
+    TwistedEnemyController, HelperController, SimpleHealController, HeavyHealController
 )
 
 
-class EnemiesController:
+class ShapesController:
     SPAWN_INTERVAL: int = 3
 
     def __init__(self) -> None:
-        self._enemies: list[EnemyController] = []
+        self._shapes: list[ShapeController] = []
         self._last_spawn = time()
         self._start_time = time()
 
     def __iter__(self) -> Generator:
-        for enemy in self._enemies:
-            yield enemy
+        for shape in self._shapes:
+            yield shape
 
     def _spawn_enemy(self) -> None:
         enemy = self._get_enemy()
-        self._enemies.append(enemy)
-        self._last_spawn = time()
+        self._shapes.append(enemy)
 
-    def remove_enemy(self, enemy_id: UUID) -> None:
-        self._enemies = [enemy for enemy in self._enemies if enemy.id != enemy_id]
+    def _spawn_helper(self) -> None:
+        helper = self._get_helper()
+
+        if helper:
+            self._shapes.append(helper)
+
+    def remove_shape(self, shape_id: UUID) -> None:
+        self._shapes = [shape for shape in self._shapes if shape.id != shape_id]
 
     def tick(self) -> None:
-        for enemy in self._enemies:
-            enemy.tick()
+        for shape in self._shapes:
+            shape.tick()
 
         if self._last_spawn + self.SPAWN_INTERVAL < time():
             self._spawn_enemy()
+            self._spawn_helper()
+            self._last_spawn = time()
 
     def _get_enemy(self) -> EnemyController:
         available_enemy_types: list[Type[EnemyController]] = [SimpleEnemyController]
@@ -57,6 +64,19 @@ class EnemiesController:
 
         return enemy()
 
+    def _get_helper(self) -> HelperController | None:
+        available_healers = [SimpleHealController]
+        spawn_probabilities = [100]
+
+        if self._start_time + 2 * LEVEL_INTERVAL < time():
+            available_healers.append(SimpleHealController)
+            available_healers.append(HeavyHealController)
+            spawn_probabilities = [85, 10, 5]
+
+        helper = choices(available_healers, weights=spawn_probabilities, k=1)[0]
+
+        return helper() if helper else None
+
     @property
     def state(self) -> list[dict]:
-        return [enemy.state for enemy in self._enemies]
+        return [shape.state for shape in self._shapes]
