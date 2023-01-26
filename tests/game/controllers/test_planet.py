@@ -22,3 +22,21 @@ def test_get_damage_full() -> None:
         controller.get_damage(PlanetController.MAX_HEALTH)
 
     assert controller._health == 0
+
+
+def test_get_heal() -> None:
+    controller = PlanetController()
+
+    controller.get_damage(30)
+    assert controller._health == 70
+
+    controller.get_heal(10)
+
+    assert controller._health == 80
+
+
+def test_get_max_heal() -> None:
+    controller = PlanetController()
+
+    controller.get_heal(15)
+    assert controller._health == PlanetController.MAX_HEALTH
