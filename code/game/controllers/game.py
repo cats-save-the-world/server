@@ -1,7 +1,7 @@
 from code.game.consts import CatStatus, ControlAction, PLANET_DISTANCE
 from .cat import CatController
 from .planet import PlanetController
-from .shape import EnemyController, HealController
+from .shape import EnemyController, HealController, ShapeController
 from .shapes import ShapesController
 
 
@@ -37,7 +37,7 @@ class GameController:
         elif isinstance(shape, HealController):
             self._planet.get_heal(shape.heal)
 
-    def _handle_planet_contact_event(self, shape: ShapesController) -> None:
+    def _handle_planet_contact_event(self, shape: ShapeController) -> None:
         if isinstance(shape, EnemyController):
             if shape.alive:
                 self._planet.get_damage(shape.damage)
