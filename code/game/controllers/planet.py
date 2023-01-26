@@ -14,7 +14,7 @@ class PlanetController:
             raise GameOver
 
     def get_heal(self, heal: int) -> None:
-        self._health = min(self._health + heal, 100)
+        self._health = min(self._health + heal, self.MAX_HEALTH)
 
     @property
     def state(self) -> dict:
