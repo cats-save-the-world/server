@@ -4,7 +4,7 @@ from typing import Generator, Type
 from uuid import UUID
 
 from code.game.consts import LEVEL_INTERVAL
-from .enemy import (
+from .shape import (
     ShapeController, EnemyController, HeavyEnemyController, LightEnemyController, SimpleEnemyController,
     TwistedEnemyController, HelperController, SimpleHealController, HeavyHealController
 )
