@@ -46,8 +46,7 @@ class EnemiesController:
             spawn_probabilities = [70, 30]
 
         if self._start_time + 2 * LEVEL_INTERVAL < time():
-            available_enemy_types.append(LightEnemyController)
-            available_enemy_types.append(HealingEnemyController)
+            available_enemy_types.extend([LightEnemyController, HealingEnemyController])
             spawn_probabilities = [50, 20, 20, 10]
 
         if self._start_time + 3 * LEVEL_INTERVAL < time():
