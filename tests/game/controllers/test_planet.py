@@ -22,3 +22,26 @@ def test_get_damage_full() -> None:
         controller.get_damage(PlanetController.MAX_HEALTH)
 
     assert controller._health == 0
+
+
+@pytest.mark.parametrize('heal, health', [
+    (0, 0),
+    (10, 10),
+    (PlanetController.MAX_HEALTH, PlanetController.MAX_HEALTH),
+])
+def test_get_heal(heal: int, health: int) -> None:
+    controller = PlanetController()
+    controller._health = 0
+    controller.get_heal(heal)
+    assert controller._health == health
+
+
+@pytest.mark.parametrize('heal, health', [
+    (0, PlanetController.MAX_HEALTH),
+    (10, PlanetController.MAX_HEALTH),
+    (PlanetController.MAX_HEALTH, PlanetController.MAX_HEALTH),
+])
+def test_get_heal_full(heal: int, health: int) -> None:
+    controller = PlanetController()
+    controller.get_heal(heal)
+    assert controller._health == health

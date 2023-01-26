@@ -72,3 +72,11 @@ class TwistedEnemyController(EnemyController):
     def tick(self) -> None:
         super().tick()
         self._angle += self._angle_shift
+
+
+class HealingEnemyController(EnemyController):
+    speed = 15
+    radius = 10
+    damage = 10
+    type = 'healing'  # noqa: A003
+    score = 0

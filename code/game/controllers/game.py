@@ -1,6 +1,7 @@
 from code.game.consts import CatStatus, ControlAction, PLANET_DISTANCE
 from .cat import CatController
 from .enemies import EnemiesController
+from .enemy import HealingEnemyController
 from .planet import PlanetController
 
 
@@ -25,6 +26,9 @@ class GameController:
                 enemy.alive = False
                 self._update_game_score(enemy.score)
                 self._cat.status = CatStatus.HITTING
+
+                if isinstance(enemy, HealingEnemyController):
+                    self._planet.get_heal(enemy.damage)
 
             if enemy.distance < PLANET_DISTANCE:
                 self._enemies.remove_enemy(enemy.id)
