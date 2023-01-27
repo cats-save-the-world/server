@@ -3,11 +3,14 @@ from time import time
 from typing import Generator, Type
 from uuid import UUID
 
-from code.game.consts import LEVEL_INTERVAL
+from code.game.consts import CatStatus, LEVEL_INTERVAL
+from code.game.exceptions import EnemyKilled, EnemyReachedPlanet
+from .cat import CatController
 from .enemy import (
     EnemyController, HealingEnemyController, HeavyEnemyController, LightEnemyController,
     SimpleEnemyController, TwistedEnemyController,
 )
+from .planet import PlanetController
 
 
 class EnemiesController:
@@ -23,19 +26,36 @@ class EnemiesController:
             yield enemy
 
     def _spawn_enemy(self) -> None:
-        enemy = self._get_enemy()
-        self._enemies.append(enemy)
-        self._last_spawn = time()
+        if self._last_spawn + self.SPAWN_INTERVAL < time():
+            enemy = self._get_enemy()
+            self._enemies.append(enemy)
+            self._last_spawn = time()
 
     def remove_enemy(self, enemy_id: UUID) -> None:
         self._enemies = [enemy for enemy in self._enemies if enemy.id != enemy_id]
 
-    def tick(self) -> None:
+    def tick(  # type: ignore[no-untyped-def]
+        self, cat: CatController, planet: PlanetController, game,
+    ) -> None:
         for enemy in self._enemies:
-            enemy.tick()
+            try:
+                enemy.tick(cat)
 
-        if self._last_spawn + self.SPAWN_INTERVAL < time():
-            self._spawn_enemy()
+            except EnemyKilled:
+                enemy.alive = False
+                game.update_game_score(enemy.score)
+                cat.status = CatStatus.HITTING
+
+                if isinstance(enemy, HealingEnemyController):
+                    planet.get_heal(enemy.damage)
+
+            except EnemyReachedPlanet:
+                self.remove_enemy(enemy.id)
+
+                if enemy.alive:
+                    planet.get_damage(enemy.damage)
+
+        self._spawn_enemy()
 
     def _get_enemy(self) -> EnemyController:
         available_enemy_types: list[Type[EnemyController]] = [SimpleEnemyController]

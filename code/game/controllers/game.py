@@ -1,7 +1,6 @@
-from code.game.consts import CatStatus, ControlAction, PLANET_DISTANCE
+from code.game.consts import ControlAction
 from .cat import CatController
 from .enemies import EnemiesController
-from .enemy import HealingEnemyController
 from .planet import PlanetController
 
 
@@ -16,27 +15,9 @@ class GameController:
 
     def tick(self) -> None:
         self._cat.tick()
-        self._enemies.tick()
+        self._enemies.tick(self._cat, self._planet, self)
 
-        self.handle_events()
-
-    def handle_events(self) -> None:
-        for enemy in self._enemies:
-            if enemy.alive and self._cat.intersects(enemy):
-                enemy.alive = False
-                self._update_game_score(enemy.score)
-                self._cat.status = CatStatus.HITTING
-
-                if isinstance(enemy, HealingEnemyController):
-                    self._planet.get_heal(enemy.damage)
-
-            if enemy.distance < PLANET_DISTANCE:
-                self._enemies.remove_enemy(enemy.id)
-
-                if enemy.alive:
-                    self._planet.get_damage(enemy.damage)
-
-    def _update_game_score(self, score: int) -> None:
+    def update_game_score(self, score: int) -> None:
         self.score += score
 
     @property
