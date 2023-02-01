@@ -1,8 +1,7 @@
-from asyncio import create_task, sleep
-
 from code.game.consts import CatStatus, ControlAction, PLANET_DISTANCE
 from .cat import CatController
 from .enemies import EnemiesController
+from .enemy import HealingEnemyController
 from .planet import PlanetController
 
 
@@ -13,15 +12,7 @@ class GameController:
         self._cat = CatController()
         self._enemies = EnemiesController()
         self._planet = PlanetController()
-        self._clock_task = create_task(self._start_clock())
-
-    async def _start_clock(self) -> None:
-        while True:
-            self.tick()
-            await sleep(self.TICK_INTERVAL)
-
-    def stop_clock(self) -> None:
-        self._clock_task.cancel()
+        self.score = 0
 
     def tick(self) -> None:
         self._cat.tick()
@@ -31,13 +22,22 @@ class GameController:
 
     def handle_events(self) -> None:
         for enemy in self._enemies:
-            if self._cat.intersects(enemy):
+            if enemy.alive and self._cat.intersects(enemy):
+                enemy.alive = False
+                self._update_game_score(enemy.score)
                 self._cat.status = CatStatus.HITTING
+
+                if isinstance(enemy, HealingEnemyController):
+                    self._planet.get_heal(enemy.damage)
+
+            if enemy.distance < PLANET_DISTANCE:
                 self._enemies.remove_enemy(enemy.id)
 
-            elif enemy.distance < PLANET_DISTANCE:
-                self._planet.get_damage(enemy.damage)
-                self._enemies.remove_enemy(enemy.id)
+                if enemy.alive:
+                    self._planet.get_damage(enemy.damage)
+
+    def _update_game_score(self, score: int) -> None:
+        self.score += score
 
     @property
     def state(self) -> dict:
@@ -45,6 +45,7 @@ class GameController:
             'cat': self._cat.state,
             'enemies': self._enemies.state,
             'planet': self._planet.state,
+            'score': self.score,
         }
 
     def control(self, control_action: ControlAction) -> None:

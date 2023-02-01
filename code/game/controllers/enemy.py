@@ -1,21 +1,23 @@
 from random import choice, uniform
 from uuid import uuid4
 
-from ._rotatable import RotatableController
+from ._circle import CircleController
 
 
-class EnemyController(RotatableController):
+class EnemyController(CircleController):
     INITIAL_DISTANCE = 1000
     MIN_ANGLE = 0
     MAX_ANGLE = 359
     damage: int
     speed: int
     type: str  # noqa: A003
+    score: int
 
     def __init__(self) -> None:
         angle = round(uniform(self.MIN_ANGLE, self.MAX_ANGLE), 2)
         super().__init__(angle=angle, distance=self.INITIAL_DISTANCE)
         self.id = uuid4()
+        self.alive = True
 
     @property
     def state(self) -> dict:
@@ -23,6 +25,8 @@ class EnemyController(RotatableController):
             **super().state,
             'id': str(self.id),
             'type': self.type,
+            'alive': self.alive,
+            'score': self.score,
         }
 
     def tick(self) -> None:
@@ -34,6 +38,7 @@ class SimpleEnemyController(EnemyController):
     radius = 10
     damage = 10
     type = 'simple'  # noqa: A003
+    score = 100
 
 
 class HeavyEnemyController(EnemyController):
@@ -41,6 +46,7 @@ class HeavyEnemyController(EnemyController):
     radius = 20
     damage = 20
     type = 'heavy'  # noqa: A003
+    score = 150
 
 
 class LightEnemyController(EnemyController):
@@ -48,6 +54,7 @@ class LightEnemyController(EnemyController):
     radius = 10
     damage = 5
     type = 'light'  # noqa: A003
+    score = 200
 
 
 class TwistedEnemyController(EnemyController):
@@ -56,6 +63,7 @@ class TwistedEnemyController(EnemyController):
     radius = 10
     damage = 10
     type = 'twisted'  # noqa: A003
+    score = 150
 
     def __init__(self) -> None:
         super().__init__()
@@ -64,3 +72,11 @@ class TwistedEnemyController(EnemyController):
     def tick(self) -> None:
         super().tick()
         self._angle += self._angle_shift
+
+
+class HealingEnemyController(EnemyController):
+    speed = 15
+    radius = 10
+    damage = 10
+    type = 'healing'  # noqa: A003
+    score = 0

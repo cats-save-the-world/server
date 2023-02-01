@@ -1,12 +1,12 @@
-from random import choice
+from random import choices
 from time import time
-from typing import Type
+from typing import Generator, Type
 from uuid import UUID
 
 from code.game.consts import LEVEL_INTERVAL
 from .enemy import (
-    EnemyController, HeavyEnemyController, LightEnemyController, SimpleEnemyController,
-    TwistedEnemyController,
+    EnemyController, HealingEnemyController, HeavyEnemyController, LightEnemyController,
+    SimpleEnemyController, TwistedEnemyController,
 )
 
 
@@ -18,7 +18,7 @@ class EnemiesController:
         self._last_spawn = time()
         self._start_time = time()
 
-    def __iter__(self):
+    def __iter__(self) -> Generator:
         for enemy in self._enemies:
             yield enemy
 
@@ -39,17 +39,23 @@ class EnemiesController:
 
     def _get_enemy(self) -> EnemyController:
         available_enemy_types: list[Type[EnemyController]] = [SimpleEnemyController]
+        spawn_probabilities = [100]
 
         if self._start_time + LEVEL_INTERVAL < time():
             available_enemy_types.append(HeavyEnemyController)
+            spawn_probabilities = [70, 30]
 
         if self._start_time + 2 * LEVEL_INTERVAL < time():
-            available_enemy_types.append(LightEnemyController)
+            available_enemy_types.extend([LightEnemyController, HealingEnemyController])
+            spawn_probabilities = [50, 20, 20, 10]
 
         if self._start_time + 3 * LEVEL_INTERVAL < time():
             available_enemy_types.append(TwistedEnemyController)
+            spawn_probabilities = [30, 20, 20, 10, 20]
 
-        return choice(available_enemy_types)()
+        enemy = choices(available_enemy_types, weights=spawn_probabilities, k=1)[0]
+
+        return enemy()
 
     @property
     def state(self) -> list[dict]:

@@ -22,6 +22,9 @@ flake8-quotes = "*"
 mypy = "*"
 pytest = "*"
 types-passlib = "*"
+httpx = "*"
+pytest-asyncio = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.10"

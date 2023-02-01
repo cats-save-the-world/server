@@ -19,4 +19,4 @@ app.include_router(game.router, prefix='/games')
 register_tortoise(app, config=TORTOISE_CONFIG)
 
 if __name__ == '__main__':
-    uvicorn.run('code.app:app', host='0.0.0.0', reload=settings.debug)
+    uvicorn.run('code.app:app', host='0.0.0.0', reload=settings.debug)  # pragma: no cover
