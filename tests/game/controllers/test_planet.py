@@ -15,7 +15,7 @@ def test_state(health: int, damage: int) -> None:
     assert controller.state['damage'] == damage
 
 
-def test_get_damage_full() -> None:
+def test_get_damage__full() -> None:
     controller = PlanetController()
 
     with pytest.raises(GameOver):
@@ -41,7 +41,7 @@ def test_get_heal(heal: int, health: int) -> None:
     (10, PlanetController.MAX_HEALTH),
     (PlanetController.MAX_HEALTH, PlanetController.MAX_HEALTH),
 ])
-def test_get_heal_full(heal: int, health: int) -> None:
+def test_get_heal__full(heal: int, health: int) -> None:
     controller = PlanetController()
     controller.get_heal(heal)
     assert controller._health == health

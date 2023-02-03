@@ -22,29 +22,29 @@ async def test_get_game(new_game: Game, active_game: Game) -> None:
     assert await get_game(active_game.id) is None
 
 
-async def test_update_game_status_new(active_game: Game) -> None:
+async def test_update_game_status__new(active_game: Game) -> None:
     await update_game_status(active_game, Game.Status.NEW)
     assert active_game.status == Game.Status.NEW
 
 
-async def test_update_game_status_active(new_game: Game) -> None:
+async def test_update_game_status__active(new_game: Game) -> None:
     await update_game_status(new_game, Game.Status.ACTIVE)
     assert new_game.status == Game.Status.ACTIVE
 
 
-async def test_update_game_status_finished(new_game: Game) -> None:
+async def test_update_game_status__finished(new_game: Game) -> None:
     await update_game_status(new_game, Game.Status.FINISHED)
     assert new_game.status == Game.Status.FINISHED
 
 
-async def test_finish_game_with_score(active_game: Game) -> None:
+async def test_finish_game__with_score(active_game: Game) -> None:
     await finish_game(active_game, 3000)
 
     assert active_game.status == Game.Status.FINISHED
     assert active_game.score == 3000
 
 
-async def test_finish_game_without_score(active_game: Game) -> None:
+async def test_finish_game__without_score(active_game: Game) -> None:
     await finish_game(active_game)
 
     assert active_game.status == Game.Status.FINISHED
