@@ -30,14 +30,23 @@ async def guest_game_create_handler():  # type: ignore[no-untyped-def]
 async def assign_guest_game(  # type: ignore[no-untyped-def]
     game_id: UUID, user: User = Depends(get_user),
 ):
-    game = await Game.get_or_none(id=game_id, user=None).select_related('user')
+    game = await Game.get_or_none(id=game_id, user=None, status=Game.Status.FINISHED)
 
     if not game:
         return Response(status_code=status.HTTP_404_NOT_FOUND)
 
     game.user = user
-    await game.save(update_fields=['user'])
+    await game.save()
     return Response(status_code=status.HTTP_200_OK)
+
+
+async def game_details_handler(game_id: UUID):  # type: ignore[no-untyped-def]
+    game = await Game.get_or_none(id=game_id, status=Game.Status.FINISHED)
+
+    if not game:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
+
+    return {'score': game.score}
 
 
 async def _authorize(websocket: WebSocket) -> User:
