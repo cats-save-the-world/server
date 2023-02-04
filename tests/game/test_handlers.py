@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from fastapi import status
 from httpx import AsyncClient
 
@@ -52,3 +54,16 @@ async def test_assign_guest_game(
     assert response.status_code == status.HTTP_200_OK
     await finished_game.refresh_from_db()
     assert await finished_game.user == user
+
+
+async def test_game_details_handler(client: AsyncClient, finished_game: Game) -> None:
+    response = await client.get(f'/games/{finished_game.id}')
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert json['score'] == finished_game.score
+
+
+async def test_game_details_handler__not_found(client: AsyncClient) -> None:
+    game_id = str(uuid4())
+    response = await client.get(f'/games/{game_id}')
+    assert response.status_code == status.HTTP_404_NOT_FOUND
