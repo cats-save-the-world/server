@@ -6,15 +6,13 @@ async def upgrade(db: BaseDBAsyncClient) -> str:
         CREATE TABLE IF NOT EXISTS "skins" (
     "id" UUID NOT NULL  PRIMARY KEY,
     "type" VARCHAR(6) NOT NULL,
-    "price" INT NOT NULL,
-    "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
+    "name" VARCHAR(40) NOT NULL,
+    "price" INT NOT NULL
 );
 COMMENT ON COLUMN "skins"."type" IS 'CAT: cat\nPLANET: planet';;
         CREATE TABLE IF NOT EXISTS "user_skins" (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "price" INT NOT NULL,
-    "is_active" INT NOT NULL,
+    "is_active" BOOL NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
     "skin_id" UUID NOT NULL REFERENCES "skins" ("id") ON DELETE CASCADE,

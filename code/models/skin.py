@@ -11,9 +11,8 @@ class Skin(Model):
 
     id = fields.UUIDField(pk=True)  # noqa: A003
     type = fields.CharEnumField(Type)  # noqa: A003
+    name = fields.CharField(max_length=40, null=False)
     price = fields.IntField()
-    created_at = fields.DatetimeField(auto_now_add=True)
-    updated_at = fields.DatetimeField(auto_now=True)
 
     class Meta:
         table = 'skins'
