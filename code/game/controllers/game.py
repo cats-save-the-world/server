@@ -6,8 +6,6 @@ from .planet import PlanetController
 
 
 class GameController:
-    TICK_INTERVAL = 0.1
-
     def __init__(self) -> None:
         self._cat = CatController()
         self._enemies = EnemiesController()
