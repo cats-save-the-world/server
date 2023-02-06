@@ -1,7 +1,10 @@
 from random import choice, uniform
 from uuid import uuid4
 
+from code.game.consts import PLANET_DISTANCE
+from code.game.exceptions import EnemyKilled, EnemyReachedPlanet
 from ._circle import CircleController
+from .cat import CatController
 
 
 class EnemyController(CircleController):
@@ -29,8 +32,14 @@ class EnemyController(CircleController):
             'score': self.score,
         }
 
-    def tick(self) -> None:
+    def tick(self, cat: CatController) -> None:
         self.distance -= self.speed
+
+        if self.alive and cat.intersects(self):
+            raise EnemyKilled
+
+        if self.distance < PLANET_DISTANCE:
+            raise EnemyReachedPlanet
 
 
 class SimpleEnemyController(EnemyController):
@@ -69,8 +78,8 @@ class TwistedEnemyController(EnemyController):
         super().__init__()
         self._angle_shift = choice([self.ANGLE_SHIFT, -self.ANGLE_SHIFT])
 
-    def tick(self) -> None:
-        super().tick()
+    def tick(self, cat: CatController) -> None:
+        super().tick(cat)
         self._angle += self._angle_shift
 
 
