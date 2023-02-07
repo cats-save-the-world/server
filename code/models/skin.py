@@ -11,7 +11,7 @@ class Skin(Model):
 
     id = fields.UUIDField(pk=True)  # noqa: A003
     type = fields.CharEnumField(Type)  # noqa: A003
-    name = fields.CharField(max_length=40, null=False)
+    name = fields.CharField(max_length=40)
     price = fields.IntField()
 
     class Meta:
