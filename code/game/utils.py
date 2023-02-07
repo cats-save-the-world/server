@@ -26,7 +26,7 @@ async def finish_game(game: Game, score: int | None = None) -> None:
 
 
 async def create_game(user: User) -> Game:
-    if Game.filter(user=user, status=Game.Status.ACTIVE).exists():
+    if await Game.filter(user=user, status=Game.Status.ACTIVE).exists():
         raise AlreadyInGame
 
     game, _ = await Game.get_or_create(user=user, status=Game.Status.NEW)
