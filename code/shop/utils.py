@@ -16,7 +16,7 @@ async def get_shop_skins(user: User) -> list[dict] | dict:
 
     for skin in skins:
         for user_skin in user_skins:
-            if skin['id'] == user_skin.skin_id:
+            if skin['id'] == user_skin.skin_id:  # type: ignore[attr-defined]
                 skin['is_bought'] = True
                 skin['is_active'] = user_skin.is_active
                 break
@@ -30,7 +30,7 @@ async def get_shop_skins(user: User) -> list[dict] | dict:
 
 async def get_user_skins(user: User) -> dict:
     return {
-        'cat': await UserSkin.filter(is_active=True, skin__type=Skin.Type.CAT)
+        'cat': await UserSkin.filter(user=user, is_active=True, skin__type=Skin.Type.CAT)
                              .select_related('skin')
                              .first()
                              .values(name='skin__name'),
