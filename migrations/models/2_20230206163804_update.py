@@ -22,5 +22,6 @@ COMMENT ON COLUMN "skins"."type" IS 'CAT: cat\nPLANET: planet';;
 
 async def downgrade(db: BaseDBAsyncClient) -> str:
     return """
+        DROP TABLE IF EXISTS "user_skins";
         DROP TABLE IF EXISTS "skins";
-        DROP TABLE IF EXISTS "user_skins";"""
+        """

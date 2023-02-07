@@ -11,14 +11,14 @@ from code.auth.utils import get_user_by_credentials
 from code.game.consts import EventType
 from code.game.controllers import GameController
 from code.game.exceptions import GameOver
-from code.game.utils import finish_game, get_game, update_game_status
+from code.game.utils import finish_game, get_game, update_game_status, create_game
 from code.models import Game, User
 
 SEND_INTERVAL = 0.1
 
 
 async def game_create_handler(user: User = Depends(get_user)):  # type: ignore[no-untyped-def]
-    game = await Game.create(user=user)
+    game = await create_game(user)
     return {'game_id': game.id}
 
 
