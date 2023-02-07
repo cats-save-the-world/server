@@ -3,7 +3,7 @@ from tortoise.expressions import Case, When
 from code.models import Skin, User, UserSkin
 
 
-async def get_user_skins(user: User) -> list[dict]:
+async def get_user_skins(user: User) -> list[dict] | dict:
     user_skins = await UserSkin.filter(
         user=user,
     ).only(
@@ -11,17 +11,25 @@ async def get_user_skins(user: User) -> list[dict]:
         'is_active',
     )
 
+    bought_skin_ids = [
+        skin.skin_id for skin in user_skins  # type: ignore[attr-defined]
+    ]
+
+    active_skin_ids = [
+        skin.skin_id for skin in user_skins if skin.is_active is True  # type: ignore[attr-defined]
+    ]
+
     return await Skin.annotate(
         is_active=Case(
             When(
-                id__in=[skin.skin_id for skin in user_skins if skin.is_active is True],
+                id__in=active_skin_ids,
                 then=True,
             ),
             default=False,
         ),
         is_bought=Case(
             When(
-                id__in=[skin.skin_id for skin in user_skins],
+                id__in=bought_skin_ids,
                 then=True,
             ),
             default=False,
