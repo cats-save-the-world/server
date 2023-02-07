@@ -1,5 +1,6 @@
 from fastapi import Depends, HTTPException, Response, status
-from tortoise.exceptions import IntegrityError
+from tortoise.exceptions import IntegrityError, OperationalError
+from tortoise.transactions import in_transaction
 
 from code.auth.dependencies import get_user
 from code.auth.schemas import UserCreateSchema, UsernameSchema
@@ -12,10 +13,13 @@ async def user_create_handler(data: UserCreateSchema):  # type: ignore[no-untype
     password_hash = get_password_hash(data.password)
 
     try:
-        user = await User.create(username=data.username, password_hash=password_hash)
-        await create_default_skins(user)
+        async with in_transaction():
+            user = await User.create(username=data.username, password_hash=password_hash)
+            await create_default_skins(user)
     except IntegrityError:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT)
+    except OperationalError:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(status_code=status.HTTP_201_CREATED)
 
