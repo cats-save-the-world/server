@@ -1,5 +1,3 @@
-from tortoise.expressions import Case, When
-
 from code.models import Skin, User, UserSkin
 from code.shop.consts import CAT_DEFAULT_SKIN_NAME
 
