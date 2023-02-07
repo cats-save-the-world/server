@@ -7,7 +7,8 @@ from tortoise import Tortoise
 from code.app import app
 from code.auth.utils import get_password_hash
 from code.config import TEST_TORTOISE_CONFIG
-from code.models import User
+from code.models import Skin, User
+from code.shop.consts import CAT_DEFAULT_SKIN_NAME
 
 
 @pytest.fixture
@@ -27,3 +28,8 @@ async def client(database: None) -> AsyncGenerator:
 @pytest.fixture
 async def user() -> User:
     return await User.create(username='username', password_hash=get_password_hash('password'))
+
+
+@pytest.fixture
+async def default_cat_skin(database: None) -> Skin:
+    return await Skin.create(name=CAT_DEFAULT_SKIN_NAME, type=Skin.Type.CAT, price=0)

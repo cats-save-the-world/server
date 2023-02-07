@@ -1,10 +1,10 @@
 from fastapi import status
 from httpx import AsyncClient
 
-from code.models import User
+from code.models import Skin, User
 
 
-async def test_user_create_handler(client: AsyncClient) -> None:
+async def test_user_create_handler(client: AsyncClient, default_cat_skin: Skin) -> None:
     response = await client.post(
         '/auth/users', json={'username': 'username', 'password': 'password'},
     )
