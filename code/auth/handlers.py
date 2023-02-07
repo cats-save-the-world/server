@@ -5,7 +5,7 @@ from code.auth.dependencies import get_user
 from code.auth.schemas import UserCreateSchema, UsernameSchema
 from code.auth.utils import get_password_hash
 from code.models import User
-from code.shop.utils import give_user_default_skins
+from code.shop.utils import create_default_skins
 
 
 async def user_create_handler(data: UserCreateSchema):  # type: ignore[no-untyped-def]
@@ -13,7 +13,7 @@ async def user_create_handler(data: UserCreateSchema):  # type: ignore[no-untype
 
     try:
         user = await User.create(username=data.username, password_hash=password_hash)
-        await give_user_default_skins(user)
+        await create_default_skins(user)
     except IntegrityError:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT)
 

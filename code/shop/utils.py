@@ -55,6 +55,6 @@ async def get_user_skins(user: User) -> dict:
     }
 
 
-async def give_user_default_skins(user: User) -> None:
+async def create_default_skins(user: User) -> None:
     skin = await Skin.get_or_none(name=CAT_DEFAULT_SKIN_NAME)
     await UserSkin.create(user=user, skin=skin, is_active=True)
