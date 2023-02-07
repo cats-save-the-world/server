@@ -24,3 +24,7 @@ async def verify_handler(user: User = Depends(get_user)):  # type: ignore[no-unt
 
 async def username_exists_handler(username: UsernameSchema):  # type: ignore[no-untyped-def]
     return await User.filter(username=username).exists()
+
+
+async def get_my_info(user: User = Depends(get_user)):  # type: ignore[no-untyped-def]
+    return {'balance': user.balance}

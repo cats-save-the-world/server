@@ -54,5 +54,5 @@ async def get_user_skins(user: User) -> dict:
             'skin',
         ).first().values(
             name='skin__name',
-        )
+        ),
     }

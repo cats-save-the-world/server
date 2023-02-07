@@ -10,7 +10,7 @@ from code.auth.exceptions import InvalidCredentials
 from code.auth.utils import get_user_by_credentials
 from code.game.consts import EventType
 from code.game.controllers import GameController
-from code.game.exceptions import GameOver, AlreadyInGame
+from code.game.exceptions import AlreadyInGame, GameOver
 from code.game.utils import create_game, finish_game, get_game, update_game_status
 from code.models import Game, User
 from code.shop.utils import get_user_skins
