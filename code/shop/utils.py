@@ -12,38 +12,20 @@ async def get_shop_skins(user: User) -> list[dict] | dict:
         'is_active',
     )
 
-    bought_skin_ids = [
-        skin.skin_id for skin in user_skins  # type: ignore[attr-defined]
-    ]
+    skins = await Skin.filter(type=Skin.Type.CAT).values('id', 'name', 'price')
 
-    active_skin_ids = [
-        skin.skin_id for skin in user_skins if skin.is_active is True  # type: ignore[attr-defined]
-    ]
+    for skin in skins:
+        for user_skin in user_skins:
+            if skin['id'] == user_skin.skin_id:
+                skin['is_bought'] = True
+                skin['is_active'] = user_skin.is_active
+                break
 
-    return await Skin.annotate(
-        is_active=Case(
-            When(
-                id__in=active_skin_ids,
-                then=True,
-            ),
-            default=False,
-        ),
-        is_bought=Case(
-            When(
-                id__in=bought_skin_ids,
-                then=True,
-            ),
-            default=False,
-        ),
-    ).filter(
-        type=Skin.Type.CAT,
-    ).values(
-        'id',
-        'name',
-        'price',
-        'is_active',
-        'is_bought',
-    )
+            else:
+                skin['is_bought'] = False
+                skin['is_active'] = False
+
+    return skins
 
 
 async def get_user_skins(user: User) -> dict:
