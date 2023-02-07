@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class SkinSchema(BaseModel):
-    id: UUID
+    id: UUID  # noqa: A003
     name: str
     price: int
     is_bought: bool
