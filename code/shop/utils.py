@@ -1,6 +1,7 @@
 from tortoise.expressions import Case, When
 
 from code.models import Skin, User, UserSkin
+from code.shop.consts import CAT_DEFAULT_SKIN_NAME
 
 
 async def get_shop_skins(user: User) -> list[dict] | dict:
@@ -56,3 +57,8 @@ async def get_user_skins(user: User) -> dict:
             name='skin__name',
         ),
     }
+
+
+async def give_user_default_skins(user: User) -> None:
+    skin = await Skin.get_or_none(name=CAT_DEFAULT_SKIN_NAME)
+    await UserSkin.create(user=user, skin=skin, is_active=True)
