@@ -11,7 +11,7 @@ from code.auth.utils import get_user_by_credentials
 from code.game.consts import EventType
 from code.game.controllers import GameController
 from code.game.exceptions import GameOver
-from code.game.utils import finish_game, get_game, update_game_status, create_game
+from code.game.utils import create_game, finish_game, get_game, update_game_status
 from code.models import Game, User
 
 SEND_INTERVAL = 0.1
