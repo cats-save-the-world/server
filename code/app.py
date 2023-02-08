@@ -6,7 +6,7 @@ import uvicorn
 from code import auth, game, shop
 from code.config import settings, TORTOISE_CONFIG
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
