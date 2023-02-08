@@ -31,7 +31,7 @@ async def get_user_skins(user: User) -> dict:
         UserSkin.filter(is_active=True, skin__type=Skin.Type.CAT)
         .select_related('skin')
         .first()
-        .values(name='skin__name')
+        .values(name='skin__name')  # noqa: C812
     )
     return {'cat': cat}
 
