@@ -12,7 +12,7 @@ async def test_user_create_handler(client: AsyncClient, default_cat_skin: Skin) 
     user = await User.first()
     user_default_skin = UserSkin.filter(user=user, skin=default_cat_skin, is_active=True)
     assert user and user.username == 'username'
-    assert await user_default_skin.exists() is True
+    assert await user_default_skin.exists()
 
 
 async def test_user_create_handler__already_exists(client: AsyncClient, user: User) -> None:
