@@ -11,7 +11,9 @@ async def get_shop_skins(user: User) -> list[dict] | dict:
     )
 
     skins = await Skin.filter(type=Skin.Type.CAT).values('id', 'name', 'price')
-    user_skins = {skin.skin_id: skin.is_active for skin in user_skins}  # type: ignore[attr-defined]
+    user_skins = {
+        skin.skin_id: skin.is_active for skin in user_skins  # type: ignore[assignment,attr-defined]
+    }
 
     for skin in skins:
         if skin['id'] in user_skins:
