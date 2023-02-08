@@ -12,7 +12,7 @@ async def upgrade(db: BaseDBAsyncClient) -> str:
 COMMENT ON COLUMN "skins"."type" IS 'CAT: cat\nPLANET: planet';;
         CREATE TABLE IF NOT EXISTS "user_skins" (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "is_active" BOOL NOT NULL,
+    "is_active" BOOL NOT NULL DEFAULT FALSE,
     "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
     "skin_id" UUID NOT NULL REFERENCES "skins" ("id") ON DELETE CASCADE,
@@ -22,5 +22,6 @@ COMMENT ON COLUMN "skins"."type" IS 'CAT: cat\nPLANET: planet';;
 
 async def downgrade(db: BaseDBAsyncClient) -> str:
     return """
+        DROP TABLE IF EXISTS "user_skins";
         DROP TABLE IF EXISTS "skins";
-        DROP TABLE IF EXISTS "user_skins";"""
+        """
