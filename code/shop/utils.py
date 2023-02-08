@@ -29,7 +29,8 @@ async def get_shop_skins(user: User) -> list[dict] | dict:
 
 async def get_user_skins(user: User) -> dict:
     cat = await (
-        UserSkin.filter(is_active=True, skin__type=Skin.Type.CAT)
+        UserSkin
+        .filter(user=user, is_active=True, skin__type=Skin.Type.CAT)
         .select_related('skin')
         .first()
         .values(name='skin__name')  # noqa: C812
