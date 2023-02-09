@@ -3,10 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 import uvicorn
 
-from code import auth, game
+from code import auth, game, shop
 from code.config import settings, TORTOISE_CONFIG
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
@@ -16,6 +16,7 @@ app.add_middleware(
 )
 app.include_router(auth.router, prefix='/auth')
 app.include_router(game.router, prefix='/games')
+app.include_router(shop.router, prefix='/shop')
 register_tortoise(app, config=TORTOISE_CONFIG)
 
 if __name__ == '__main__':

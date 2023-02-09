@@ -10,16 +10,23 @@ from code.auth.exceptions import InvalidCredentials
 from code.auth.utils import get_user_by_credentials
 from code.game.consts import EventType
 from code.game.controllers import GameController
-from code.game.exceptions import GameOver
-from code.game.utils import finish_game, get_game, update_game_status
+from code.game.exceptions import AlreadyInGame, GameOver
+from code.game.utils import create_game, finish_game, get_game, update_game_status
 from code.models import Game, User
+from code.shop.utils import get_user_skins
 
 SEND_INTERVAL = 0.1
 
 
 async def game_create_handler(user: User = Depends(get_user)):  # type: ignore[no-untyped-def]
-    game = await Game.create(user=user)
-    return {'game_id': game.id}
+    try:
+        game, skins = await asyncio.gather(
+            create_game(user),
+            get_user_skins(user),
+        )
+        return {'game_id': game.id, 'skins': skins}
+    except AlreadyInGame:
+        return Response(status_code=status.HTTP_400_BAD_REQUEST)
 
 
 async def guest_game_create_handler():  # type: ignore[no-untyped-def]
