@@ -1,1 +1,1 @@
-CAT_DEFAULT_SKIN_NAME = 'CAT_DEFAULT_SKIN_NAME'  # TODO Change string value
+CAT_DEFAULT_SKIN_NAME = 'boots'
