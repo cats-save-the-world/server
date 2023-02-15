@@ -11,7 +11,7 @@ async def upgrade(db: BaseDBAsyncClient) -> str:
     "amount" INT NOT NULL,
     "user_id" UUID NOT NULL REFERENCES "users" ("id") ON DELETE CASCADE
 );
-COMMENT ON COLUMN "transactions"."type" IS 'SKIN_PURCHASE: skin_purchase';;"""
+COMMENT ON COLUMN "transactions"."type" IS 'SKIN_PURCHASE: skin_purchase';"""
 
 
 async def downgrade(db: BaseDBAsyncClient) -> str:
