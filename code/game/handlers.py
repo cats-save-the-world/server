@@ -29,24 +29,6 @@ async def game_create_handler(user: User = Depends(get_user)):  # type: ignore[n
         return Response(status_code=status.HTTP_400_BAD_REQUEST)
 
 
-async def guest_game_create_handler():  # type: ignore[no-untyped-def]
-    game = await Game.create()
-    return {'game_id': game.id}
-
-
-async def assign_guest_game(  # type: ignore[no-untyped-def]
-    game_id: UUID, user: User = Depends(get_user),
-):
-    game = await Game.get_or_none(id=game_id, user=None, status=Game.Status.FINISHED)
-
-    if not game:
-        return Response(status_code=status.HTTP_404_NOT_FOUND)
-
-    game.user = user
-    await game.save()
-    return Response(status_code=status.HTTP_200_OK)
-
-
 async def game_details_handler(game_id: UUID):  # type: ignore[no-untyped-def]
     game = await Game.get_or_none(id=game_id, status=Game.Status.FINISHED)
 
