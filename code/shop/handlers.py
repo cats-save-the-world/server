@@ -40,3 +40,22 @@ async def buy_skin_handler(  # type: ignore[no-untyped-def]
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(status_code=status.HTTP_200_OK)
+
+
+async def select_skin_handler(  # type: ignore[no-untyped-def]
+    skin_id: UUID, user: User = Depends(get_user),
+):
+    user_skin = await UserSkin.get_or_none(skin_id=skin_id)
+
+    if user_skin is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    try:
+        async with in_transaction():
+            await UserSkin.filter(user=user).update(is_active=False)
+            user_skin.is_active = True
+            await user_skin.save(update_fields=['is_active'])
+    except OperationalError:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response(status_code=status.HTTP_200_OK)
