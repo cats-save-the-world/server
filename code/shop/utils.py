@@ -1,28 +1,24 @@
 from code.models import Skin, User, UserSkin
-from code.shop.consts import CAT_DEFAULT_SKIN_NAME
+from code.shop.consts import CAT_DEFAULT_SKIN_NAME, SkinStatus
 
 
-async def get_shop_skins(user: User) -> list[dict] | dict:
-    user_skins = await UserSkin.filter(
-        user=user,
-    ).only(
-        'skin_id',
-        'is_active',
+async def get_shop_skins(user: User) -> list[dict]:
+    purchased_skins = await UserSkin.filter(user=user).only('skin_id', 'is_active')
+    skins: list[dict] = await (  # type: ignore[assignment]
+        Skin
+        .filter(type=Skin.Type.CAT)
+        .values('id', 'name', 'price')  # noqa: C812
     )
-
-    skins = await Skin.filter(type=Skin.Type.CAT).values('id', 'name', 'price')
-    user_skins = {
-        skin.skin_id: skin.is_active for skin in user_skins  # type: ignore[assignment,attr-defined]
+    skins_map = {
+        skin.skin_id: skin.is_active  # type: ignore[attr-defined]
+        for skin in purchased_skins
     }
 
     for skin in skins:
-        if skin['id'] in user_skins:
-            skin['is_bought'] = True
-            skin['is_active'] = user_skins[skin['id']]
+        skin['status'] = SkinStatus.AVAILABLE
 
-        else:
-            skin['is_bought'] = False
-            skin['is_active'] = False
+        if skin['id'] in skins_map:
+            skin['status'] = SkinStatus.SELECTED if skins_map[skin['id']] else SkinStatus.PURCHASED
 
     return skins
 
@@ -35,7 +31,7 @@ async def get_user_skins(user: User) -> dict:
         .first()
         .values(name='skin__name')  # noqa: C812
     )
-    return {'cat': cat}
+    return {'cat': cat['name']}  # type: ignore[call-overload]
 
 
 async def create_default_skins(user: User) -> None:
