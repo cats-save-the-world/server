@@ -30,7 +30,7 @@ async def buy_skin_handler(  # type: ignore[no-untyped-def]
             user_skin, created = await UserSkin.get_or_create(user=user, skin=skin)
 
             if created:
-                user.balance -= F('balance') - skin.price
+                user.balance = F('balance') - skin.price
                 await user.save(update_fields=['balance'])
                 await Transaction.create(
                     user=user, reference_id=skin.id, amount=skin.price,
